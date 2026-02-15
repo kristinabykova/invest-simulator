@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Инвест-симулятор</title>
+  
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="page">
+    <div class="topbar">Инвест-симулятор</div>
+
+    <div class="tabs">
+      <div class="tab">термины</div>
+      <div class="tab">главная</div>
+      <div class="tab">этапы обучения</div>
+    </div>
+
+    <div class="main">
+      <!-- ЛЕВО -->
+      <section class="panel left" aria-label="Список инструментов">
+        <div class="stocklist" id="stockList">
+          <div class="stocks" id="stocks"></div>
+        </div>
+      </section>
+
+      <!-- ЦЕНТР -->
+      <section class="panel center" aria-label="График">
+        <div class="chartWrap">
+          <div class="periodSelect">
+            <select id="periodSelect">
+              <option value="1">1 день</option>
+              <option value="3" selected>3 дня</option>
+              <option value="5">5 дней</option>
+            </select>
+          </div>
+
+          <canvas id="priceChart"></canvas>
+        </div>
+      </section>
+
+      <!-- ПРАВО -->
+      <section class="panel right" aria-label="Что если">
+        <h2 class="whatifTitle">Что/если</h2>
+
+        <div class="field">
+          <div class="label">Количество лотов</div>
+          <input type="text" inputmode="numeric" id="whatIfLot" class="input" placeholder="0">
+          <button id="wfCalcBtn" class="wfBtn" type="button" disabled>
+            Рассчитать
+          </button>
+        </div>
+
+        <div class="whatifText" id="whatIfBlock">
+
+          <div>Цена открытия — <b><span id="wfOpen">—</b></span></div>
+          <div>Цена закрытия — <b><span id="wfClose">—</b></span></div>
+          <div>Максимум за период — <b><span id="wfMax">—</b></span></div>
+          <div>Минимум за период — <b><span id="wfMin">—</b></span></div>
+          <div>Прибыль за период — <b><span id="wfPft">—</b></span></div>
+          <div>Волатильность — <b><span id="wfVol">—</b></span></div>
+          <div>Тип тренда — <b><span id="wfTrd">—</b></span></div>
+          <div>Доходность за период — <b><span id="wfRoi">—</b></span></div>
+          <div>Риск — <b><span id="wfRisk">—</b></span></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Ввод суммы + кнопки -->
+    <div class="tradeRow">
+
+      <div class="smallLabelLot">Размер лота</div>
+      <span id="lotInfo" class="tradeValue">—</span>
+
+      <div class="smallLabel">Количество лотов</div>
+      <input type="text" inputmode="numeric" id="tradeSum" class="tradeInput" placeholder="0">
+
+      <button class="btn" id="buyBtn" type="button">Купить</button>
+      <button class="btn" id="sellBtn" type="button">Продать</button>
+    </div>
+
+    <!-- НИЗ -->
+    <div class="bottom">
+      <div class="bottomBox">
+        <h3 class="bottomTitle">Объяснение</h3>
+        <div class="placeholder" aria-hidden="true"></div>
+      </div>
+      <div class="bottomBox">
+        <h3 class="bottomTitle">Подсказка</h3>
+        <div class="placeholder" aria-hidden="true"></div>
+      </div>
+      <div class="bottomBox">
+        <h3 class="bottomTitle">Термины</h3>
+        <div class="placeholder" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+
