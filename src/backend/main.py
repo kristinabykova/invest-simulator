@@ -1,10 +1,10 @@
+import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers.stocks import router as stocks_router
-from routers.whatif import router as whatif_router
-import uvicorn
+from routers import main_router
 
 app = FastAPI(title="Investment Simulator API")
+app.include_router(main_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -12,9 +12,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app.include_router(stocks_router)
-app.include_router(whatif_router)
 
 @app.get("/")
 def root():

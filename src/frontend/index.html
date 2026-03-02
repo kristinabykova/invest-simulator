@@ -45,7 +45,7 @@
 
       <!-- ПРАВО -->
       <section class="panel right" aria-label="Что если">
-        <h2 class="whatifTitle">Что/если</h2>
+        <h2 class="whatifTitle">Анализ периода</h2>
 
         <div class="field">
           <div class="label">Количество лотов</div>
@@ -87,18 +87,40 @@
     <div class="bottom">
       <div class="bottomBox">
         <h3 class="bottomTitle">Объяснение</h3>
-        <div class="placeholder" aria-hidden="true"></div>
+        <div class="placeholder" id="explanationText" aria-hidden="true"></div>
       </div>
       <div class="bottomBox">
         <h3 class="bottomTitle">Подсказка</h3>
-        <div class="placeholder" aria-hidden="true"></div>
+        <div class="placeholder" id="tipText" aria-hidden="true"></div>
       </div>
       <div class="bottomBox">
         <h3 class="bottomTitle">Термины</h3>
-        <div class="placeholder" aria-hidden="true"></div>
+        <div class="placeholder" id="termText" aria-hidden="true"></div>
       </div>
     </div>
+
+    <!-- ЗАГОЛОВОК ДЛЯ НЕЙРОСЕТИ -->
+  <div class="aiHeader">Ответ от нейросети</div>
+
+  <!-- НИЗ 2: нейросеть -->
+  <div class="bottom bottomAI">
+    <div class="bottomBox">
+      <h3 class="bottomTitle">Объяснение</h3>
+      <div class="placeholder" id="aiExplanationText" aria-hidden="true"></div>
+    </div>
+
+    <div class="bottomBox">
+      <h3 class="bottomTitle">Подсказка</h3>
+      <div class="placeholder" id="aiTipText" aria-hidden="true"></div>
+    </div>
+
+    <div class="bottomBox">
+      <h3 class="bottomTitle">Термины</h3>
+      <div class="placeholder" id="aiTermText" aria-hidden="true"></div>
+    </div>
   </div>
+</div>
+
 
   <script src="app.js"></script>
 </body>

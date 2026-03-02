@@ -29,13 +29,38 @@ function formatRub(v) {
 function formatXAxisLabel(iso, days) {
   const s = String(iso);
   if (days === 1) {
-    // "2024-01-01T10:05:00" -> "10:05"
     const t = s.includes("T") ? s.split("T")[1] : (s.split(" ")[1] || "");
     return t ? t.slice(0, 5) : "";
   }
-  // "2024-01-01..." -> "01.01"
   const d = s.slice(0, 10);
   return `${d.slice(8, 10)}.${d.slice(5, 7)}`;
+}
+
+function renderExplanations(explanations) {
+  if (!explanations) return;
+  
+  const explanationEl = document.getElementById("explanationText");
+  if (explanationEl) {
+    explanationEl.textContent = explanations.explanation || "Нет объяснения";
+    explanationEl.classList.remove("placeholder");
+  }
+  
+  const tipEl = document.getElementById("tipText");
+  if (tipEl) {
+    tipEl.textContent = explanations.tip || "Нет подсказки";
+    tipEl.classList.remove("placeholder");
+  }
+  
+  const termEl = document.getElementById("termText");
+  if (termEl) {
+    termEl.textContent = explanations.term || "Нет терминов";
+    termEl.classList.remove("placeholder");
+  }
+}
+
+function formatTerms(terms) {
+  if (!terms || terms.length === 0) return "—";
+  return terms.map(t => `<b>${t.term}</b> — ${t.definition}`).join("<br><br>");
 }
 
 function renderWhatIf(data) {
@@ -48,6 +73,9 @@ function renderWhatIf(data) {
   const profitEl = document.getElementById("wfPft");
   const roiEl = document.getElementById("wfRoi");
   const riskEl = document.getElementById("wfRisk");
+  const aiExplanationEl = document.getElementById("aiExplanationText");
+  const aiTipEl = document.getElementById("aiTipText");
+  const aiTermEl = document.getElementById("aiTermText");
 
   const fmt = (v) => (v === null || v === undefined ? "нет данных" : Number(v).toFixed(2));
 
@@ -64,17 +92,16 @@ function renderWhatIf(data) {
       volEl.className = "";
     } else {
       const volPct = Number(data.volatility);
-      const label =
-        volPct < 0.5 ? " (низкая)" :
-        volPct < 1.5 ? " (средняя)" :
-                       " (повышенный риск)";
+      let label = data.vol_label;
+      if (label != null){
 
-      volEl.textContent = volPct.toFixed(3) + " %" + label;
-      volEl.className = "";
+        volEl.textContent = volPct.toFixed(3) + " % (" + label + ")";
 
-      if (volPct < 0.5) volEl.classList.add("vol-low");
-      else if (volPct < 1.5) volEl.classList.add("vol-mid");
-      else volEl.classList.add("vol-high");
+        volEl.className = "";
+        if (label === "низкая") volEl.classList.add("vol-low");
+        else if (label === "средняя") volEl.classList.add("vol-mid");
+        else volEl.classList.add("vol-high");
+      }
     }
   }
 
@@ -110,6 +137,18 @@ function renderWhatIf(data) {
     }
   }
 
+  if (data.ai_text && aiExplanationEl && aiTipEl && aiTermEl) {
+    aiExplanationEl.textContent = data.ai_text.explanation ?? "—";
+    aiTipEl.textContent = data.ai_text.tip ?? "—";
+    aiTermEl.innerHTML = formatTerms(data.ai_text.terms);
+    aiExplanationEl.classList.remove("placeholder");
+    aiTipEl.classList.remove("placeholder");
+    aiTermEl.classList.remove("placeholder");
+  } else if (aiExplanationEl && aiTipEl && aiTermEl) {
+    aiExplanationEl.textContent = "Нейросеть не использовалась";
+    aiTipEl.textContent = "";
+    aiTermEl.textContent = "";
+  }
 
 }
 
@@ -334,6 +373,7 @@ async function init() {
           lots_count: Number(document.getElementById("whatIfLot").value)
         });
         renderWhatIf(data);
+        renderExplanations(data.explanations)
       } catch (e) {
         console.error("Ошибка what-if:", e);
       }

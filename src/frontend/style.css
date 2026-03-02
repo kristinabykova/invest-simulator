@@ -1,6 +1,6 @@
 :root{
   --accent:#e86963;       /* основной красный */
-  --accent-dark:#d95d57;  /* ховер/актив */
+  --accent-dark:#d95d57;  
   --border:#d9d9d9;
   --text:#222;
   --muted:#666;
@@ -18,7 +18,7 @@ body{
 }
 
 .page{
-  width:min(1200px, 96vw);
+  width:min(1300px, 96vw);
   margin:14px auto;
   border:1px solid var(--border);
   background:var(--bg);
@@ -71,7 +71,7 @@ body{
 
 /* Левый список "термины" */
 .left{
-  padding:14px 14px 12px 14px;
+  padding:14px 14px 0px 14px;
 }
 
 
@@ -99,7 +99,7 @@ canvas{
 
 /* Правый "Что/если" */
 .right{
-  padding:14px 16px 12px 16px;
+  padding:8px 16px 12px 16px;
 }
 .whatifTitle{
   margin:0 0 10px 0;
@@ -230,13 +230,12 @@ canvas{
   .tradeRow{ flex-wrap:wrap; }
 }
 
-
 .stocks{
 
-  height:280px;        /* занимает всю высоту рамки */
-  overflow-y:auto;         /* ← вертикальная прокрутка */
+  height:280px;        
+  overflow-y:auto;         
   overflow-x:hidden;
-  padding-right:6px;       /* чтобы текст не прилипал к скроллу */
+  padding-right:6px;       
 }
 
 /* косметика скролла (не обязательно, но приятно) */
@@ -389,3 +388,16 @@ canvas{
 .roi-plus { color: #2e7d32; font-weight: 700; }
 .roi-minus { color: #c62828; font-weight: 700; }
 .roi-zero { color: #444; font-weight: 700; }
+
+.aiHeader{
+  margin: 0;
+  border-top:1px solid var(--border);
+  padding:14px 16px;
+  text-align:center;
+  font-size:20px;
+  font-weight:900;
+  color:var(--accent);
+}
+
+.bottomBox:last-child{ border-right:none; }
+

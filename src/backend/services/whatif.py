@@ -46,6 +46,15 @@ def historical_volatility(closes):
 
     return statistics.stdev(returns)
 
+def volatility_label(vol: float | None) -> str:
+    if vol is None:
+        return None
+    if vol < 0.5:
+        return "низкая"
+    if vol < 1.5:
+        return "средняя"
+    return "высокая"
+
 def profit(first: float, last: float, lot_size: int, lots_count: int):
     profit = None
     if lots_count and first and last and lot_size:
@@ -92,6 +101,8 @@ def analyze_whatif(ticker: str, from_date: str, to_date: str, interval: int, lot
     vol_raw = historical_volatility(closes)
     vol = None if vol_raw is None else vol_raw * 100
 
+    vol_label = volatility_label(vol)
+
     trend = detect_trend(closes)
 
     profit_period = profit(first_close, last_close, lot_size, lots_count)
@@ -101,12 +112,12 @@ def analyze_whatif(ticker: str, from_date: str, to_date: str, interval: int, lot
     risk = risk_assessment(vol, roi_period)
 
     return {
-
         "first_close": first_close,
         "last_close": last_close,
         "period_high": period_high,
         "period_low": period_low,
         "volatility": vol,
+        "vol_label": vol_label,
         "trend": trend,
         "roi": roi_period,
         "profit": profit_period,
