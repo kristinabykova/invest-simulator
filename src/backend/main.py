@@ -17,5 +17,8 @@ app.add_middleware(
 def root():
     return {"status": "ok"}
 
+
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
+
+

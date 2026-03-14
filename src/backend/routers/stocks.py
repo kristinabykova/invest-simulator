@@ -1,9 +1,11 @@
+import json
+
 from fastapi import APIRouter, HTTPException, status
 from services.moex import get_stock_candles, get_stock_lotsize
 from services.stocks import list_of_stocks, is_supported_ticker
 from datetime import date, timedelta
 from services.cache_services import redis_client
-import json
+from schemas.whatif import Candle, LotSize
 
 router = APIRouter(prefix="/stocks", tags=["Stocks"])
 
@@ -12,7 +14,7 @@ def get_stocks():
     return list_of_stocks()
 
 @router.get("/{ticker}/lotsize")
-def get_lotsize(ticker: str):
+def get_lotsize(ticker: str) -> LotSize:
     if not is_supported_ticker(ticker):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -23,7 +25,7 @@ def get_lotsize(ticker: str):
     return {"ticker":ticker, "lotsize": lotsize}
 
 @router.get("/{ticker}/history")
-def stock_history(ticker: str, days: int = 3):
+def stock_history(ticker: str, days: int = 3) -> list[Candle]:
     if not is_supported_ticker(ticker):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
