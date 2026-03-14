@@ -2,7 +2,7 @@ from services.moex import get_stock_candles, get_stock_lotsize
 import math
 import statistics
 
-def detect_trend(closes, threshold_pct_per_step=0.01):
+def detect_trend(closes, threshold_pct_per_step=0.01) -> str | None:
     if len(closes) < 5:
         return None
 
@@ -31,7 +31,7 @@ def detect_trend(closes, threshold_pct_per_step=0.01):
     else:
         return "боковой тренд"
 
-def historical_volatility(closes):
+def historical_volatility(closes) -> float | None: 
     if len(closes) < 2:
         return None
 
@@ -46,7 +46,7 @@ def historical_volatility(closes):
 
     return statistics.stdev(returns)
 
-def volatility_label(vol: float | None) -> str:
+def volatility_label(vol: float | None) -> str | None:
     if vol is None:
         return None
     if vol < 0.5:
@@ -55,7 +55,7 @@ def volatility_label(vol: float | None) -> str:
         return "средняя"
     return "высокая"
 
-def profit(first: float, last: float, lot_size: int, lots_count: int):
+def profit(first: float, last: float, lot_size: int, lots_count: int) -> float | None:
     profit = None
     if lots_count and first and last and lot_size:
         profit = (last - first) * lot_size * lots_count
@@ -79,7 +79,7 @@ def risk_assessment(volatility: float | None, roi: float | None) -> str | None:
 
     return "умеренный риск"
 
-def analyze_whatif(ticker: str, from_date: str, to_date: str, interval: int, lots_count: int):
+def analyze_whatif(ticker: str, from_date: str, to_date: str, interval: int, lots_count: int) -> dict:
     
     candles = get_stock_candles(
         ticker=ticker,

@@ -6,3 +6,13 @@ class WhatIfRequest(BaseModel):
     to: str
     interval: int = 10
     lots_count: int
+
+class Candle(BaseModel):
+    date: str
+    close: float
+    high: float
+    low: float
+
+class LotSize(BaseModel):
+    ticker: str
+    lotsize: int

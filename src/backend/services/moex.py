@@ -1,8 +1,10 @@
 import requests
+from schemas.whatif import Candle
 
 MOEX_URL = "https://iss.moex.com/iss/engines/stock/markets/shares"
 
-def get_stock_candles(ticker: str, date_from: str, date_to: str, interval: int=10):
+def get_stock_candles(ticker: str, date_from: str, date_to: str, 
+                      interval: int=10) -> list[Candle]:
     url = f"{MOEX_URL}/securities/{ticker}/candles.json"
     params = {
         "interval": interval,  
@@ -28,7 +30,7 @@ def get_stock_candles(ticker: str, date_from: str, date_to: str, interval: int=1
 
     return result
 
-def get_stock_lotsize(ticker:str):
+def get_stock_lotsize(ticker:str) -> None | int:
 
     url = f"{MOEX_URL}/securities/{ticker}.json"
     params = {"iss.only":"securities"}

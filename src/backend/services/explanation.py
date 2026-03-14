@@ -19,20 +19,20 @@ def all_explanations(result: dict) -> dict:
         "term": get_term(trend)
     }
 
-def get_explanation(trend):
+def get_explanation(trend) -> str | None:
 
     if not trend in EXPLAIN:
         return None
 
     return EXPLAIN[trend]
     
-def get_tip(trend):
+def get_tip(trend) -> str:
 
     if trend == "нисходящий тренд":
         return """Не спеши покупать по низкой цене, она может стать еще ниже."""
     
 
-def get_term(trend):
+def get_term(trend) -> str:
 
     if trend == "нисходящий тренд":
         return """Фиксировать прибыль –  ситуация, когда трейдеры продают акции, 
