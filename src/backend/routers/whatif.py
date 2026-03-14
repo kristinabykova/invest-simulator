@@ -13,10 +13,13 @@ def analyze(req: WhatIfRequest):
 
     result["explanations"] = all_explanations(result)
 
-    metrics = build_metrics_for_llm(result, req)
+    # metrics = build_metrics_for_llm(result, req)
     
-    result["ai_text"] = generate_insights(metrics).model_dump()
+    # result["ai_text"] = generate_insights(metrics).model_dump()
+    result["ai_text"] = test()
+
+    return result
 
     #result["ai_text"] = test()
 
-    return result
+    
