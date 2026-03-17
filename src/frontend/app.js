@@ -141,10 +141,10 @@ function renderAI(data) {
   const aiTipEl = document.getElementById("aiTipText");
   const aiTermEl = document.getElementById("aiTermText");
 
-  if (data.ai_text && aiExplanationEl && aiTipEl && aiTermEl) {
-    aiExplanationEl.textContent = data.ai_text.explanation ?? "—";
-    aiTipEl.textContent = data.ai_text.tip ?? "—";
-    aiTermEl.innerHTML = formatTerms(data.ai_text.terms);
+  if (data && aiExplanationEl && aiTipEl && aiTermEl) {
+    aiExplanationEl.textContent = data.explanation ?? "—";
+    aiTipEl.textContent = data.tip ?? "—";
+    aiTermEl.innerHTML = formatTerms(data.terms);
     aiExplanationEl.classList.remove("placeholder");
     aiTipEl.classList.remove("placeholder");
     aiTermEl.classList.remove("placeholder");
@@ -364,32 +364,52 @@ async function init() {
   }
 
   if (wfCalcBtn) {
-    wfCalcBtn.addEventListener("click", async () => {
-      if (!currentStock || !wfFrom || !wfTo) return;
+  wfCalcBtn.addEventListener("click", async () => {
 
-      try {
-        const data = await apiPostJson("/whatif/analyze", {
-          ticker: currentStock.ticker,
-          from_: wfFrom,
-          to: wfTo,
-          interval: 10,
-          lots_count: Number(document.getElementById("whatIfLot").value)
+    if (!currentStock || !wfFrom || !wfTo) return;
+
+    const payload = {
+      ticker: currentStock.ticker,
+      from_: wfFrom,
+      to: wfTo,
+      interval: 10,
+      lots_count: Number(document.getElementById("whatIfLot").value)
+    };
+
+    try {
+      const data = await apiPostJson("/whatif/analyze", payload);
+
+      renderWhatIf(data);
+      
+
+      apiPostJson("/whatif/analyze/ai", payload)
+        .then(aiData => {
+
+          console.log(aiData)
+
+          if (aiData) {
+            renderAI(aiData);
+          } else {
+            renderExplanations(data.explanations);
+            document.getElementById("aiHeader").style.display = "block";
+            document.getElementById("aiWarning").style.display = "none";
+          }
+        })
+        .catch(err => {
+          console.error("AI ошибка:", err);
+
+          
         });
-        renderWhatIf(data)
-        if (data.ai_text.explanation) {
-          renderAI(data);
-        }
-        else {
-          document.getElementById("aiHeader").style.display = "none"
-          document.getElementById("aiWarning").style.display = "block"
-          renderExplanations(data.explanations)
-        }
-      } catch (e) {
-        console.error("Ошибка what-if:", e);
-      }
-    });
-    setCalcEnabled();
-  }
+
+    } catch (e) {
+      console.error("Ошибка what-if:", e);
+    }
+
+  });
+
+  setCalcEnabled();
+}
+
 }
 
 async function loadLotSize(ticker) {

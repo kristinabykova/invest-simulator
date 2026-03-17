@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from routers.stocks import router as stocks_router
-from routers.whatif import router as whatif_router
+from routers.v1.stocks import router as stocks_router
+from routers.v1.whatif import router as whatif_router
 
 main_router = APIRouter()
 

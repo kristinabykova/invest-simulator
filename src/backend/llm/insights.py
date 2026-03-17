@@ -1,38 +1,11 @@
 from schemas.whatif import WhatIfRequest
 import json
 from schemas.insights import MetricsIn, InsightsResponse
-from openai import OpenAI
+from openai import AsyncOpenAI
 import os
 
 NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
 NVIDIA_MODEL = "deepseek-ai/deepseek-v3.2"
-
-def get_openai_client():
-    api_key = os.getenv("NVIDIA_API_KEY")
-    if not api_key:
-        return None
-    return OpenAI(base_url=NVIDIA_BASE_URL, api_key=api_key)
-
-def build_metrics_for_llm(result: dict, req: WhatIfRequest) -> MetricsIn:
-    
-    roi = result["roi"] * 100
-    vol = result.get("volatility")
-
-    return MetricsIn(
-        ticker=req.ticker,
-        first_close=float(result["first_close"]),
-        last_close=float(result["last_close"]),
-        period_high=float(result["period_high"]),
-        period_low=float(result["period_low"]),
-        profit=float(result["profit"]),
-        roi=float(roi),
-        volatility_pct=float(vol) if vol is not None else 0.0,
-        volatility_label=result.get("vol_label") or "неизвестно",
-        trend=result.get("trend") or "неизвестно",
-        risk=result.get("risk") or "неизвестно",
-        lots=int(req.lots_count),
-    )
-
 
 SYSTEM_PROMPT = """
 Ты помощник для обучающего симулятора инвестиций.
@@ -55,6 +28,32 @@ SYSTEM_PROMPT = """
 - definition: до 200 символов
 """
 
+def get_openai_client():
+    api_key = os.getenv("NVIDIA_API_KEY")
+    if not api_key:
+        return None
+    return AsyncOpenAI(base_url=NVIDIA_BASE_URL, api_key=api_key)
+
+def build_metrics_for_llm(result: dict, req: WhatIfRequest) -> MetricsIn:
+    
+    roi = result["roi"] * 100
+    vol = result.get("volatility")
+
+    return MetricsIn(
+        ticker=req.ticker,
+        first_close=float(result["first_close"]),
+        last_close=float(result["last_close"]),
+        period_high=float(result["period_high"]),
+        period_low=float(result["period_low"]),
+        profit=float(result["profit"]),
+        roi=float(roi),
+        volatility_pct=float(vol) if vol is not None else 0.0,
+        volatility_label=result.get("vol_label") or "неизвестно",
+        trend=result.get("trend") or "неизвестно",
+        risk=result.get("risk") or "неизвестно",
+        lots=int(req.lots_count),
+    )
+
 def build_user_prompt(m: MetricsIn) -> str:
     return f"""
 Данные анализа периода по акции {m.ticker}:
@@ -76,7 +75,7 @@ def build_user_prompt(m: MetricsIn) -> str:
 Верни строго JSON.
 """
 
-def generate_insights(metrics: MetricsIn) -> InsightsResponse:
+async def generate_insights(metrics: MetricsIn) -> InsightsResponse:
     client = get_openai_client()
     if client is None:
         return InsightsResponse(
@@ -86,7 +85,7 @@ def generate_insights(metrics: MetricsIn) -> InsightsResponse:
             tone="нейтрально-обучающий",
         )
 
-    resp = client.chat.completions.create(
+    resp = await client.chat.completions.create(
         model=NVIDIA_MODEL,
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
@@ -111,4 +110,4 @@ def generate_insights(metrics: MetricsIn) -> InsightsResponse:
     return InsightsResponse.model_validate(data)
 
 def test():
-    return {"explanation": None, "tip": "Обращай внимание на волатильность и ширину торгового диапазона, чтобы оценивать активность рынка.","terms": [{"term": "Боковой тренд","definition": "Ситуация на рынке, когда цена актива колеблется в горизонтальном диапазоне без явного роста или падения."},{"term": "Волатильность","definition": "Статистический показатель, который характеризует степень изменчивости цены актива за определенный период."}],"tone": "нейтрально-обучающий"}
+    return {"explanation": "все хорошо", "tip": "Обращай внимание на волатильность и ширину торгового диапазона, чтобы оценивать активность рынка.","terms": [{"term": "Боковой тренд","definition": "Ситуация на рынке, когда цена актива колеблется в горизонтальном диапазоне без явного роста или падения."},{"term": "Волатильность","definition": "Статистический показатель, который характеризует степень изменчивости цены актива за определенный период."}],"tone": "нейтрально-обучающий"}
