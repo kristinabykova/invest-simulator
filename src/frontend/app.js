@@ -39,19 +39,19 @@ function formatXAxisLabel(iso, days) {
 function renderExplanations(explanations) {
   if (!explanations) return;
   
-  const explanationEl = document.getElementById("explanationText");
+  const explanationEl = document.getElementById("aiExplanationText");
   if (explanationEl) {
     explanationEl.textContent = explanations.explanation || "Нет объяснения";
     explanationEl.classList.remove("placeholder");
   }
   
-  const tipEl = document.getElementById("tipText");
+  const tipEl = document.getElementById("aiTipText");
   if (tipEl) {
     tipEl.textContent = explanations.tip || "Нет подсказки";
     tipEl.classList.remove("placeholder");
   }
   
-  const termEl = document.getElementById("termText");
+  const termEl = document.getElementById("aiTermText");
   if (termEl) {
     termEl.textContent = explanations.term || "Нет терминов";
     termEl.classList.remove("placeholder");
@@ -73,9 +73,6 @@ function renderWhatIf(data) {
   const profitEl = document.getElementById("wfPft");
   const roiEl = document.getElementById("wfRoi");
   const riskEl = document.getElementById("wfRisk");
-  const aiExplanationEl = document.getElementById("aiExplanationText");
-  const aiTipEl = document.getElementById("aiTipText");
-  const aiTermEl = document.getElementById("aiTermText");
 
   const fmt = (v) => (v === null || v === undefined ? "нет данных" : Number(v).toFixed(2));
 
@@ -136,6 +133,13 @@ function renderWhatIf(data) {
       roiEl.classList.add(num > 0 ? "roi-plus" : (num < 0 ? "roi-minus" : "roi-zero"));
     }
   }
+}
+
+function renderAI(data) {
+
+  const aiExplanationEl = document.getElementById("aiExplanationText");
+  const aiTipEl = document.getElementById("aiTipText");
+  const aiTermEl = document.getElementById("aiTermText");
 
   if (data.ai_text && aiExplanationEl && aiTipEl && aiTermEl) {
     aiExplanationEl.textContent = data.ai_text.explanation ?? "—";
@@ -149,7 +153,6 @@ function renderWhatIf(data) {
     aiTipEl.textContent = "";
     aiTermEl.textContent = "";
   }
-
 }
 
 async function apiGetJson(path) {
@@ -372,8 +375,15 @@ async function init() {
           interval: 10,
           lots_count: Number(document.getElementById("whatIfLot").value)
         });
-        renderWhatIf(data);
-        renderExplanations(data.explanations)
+        renderWhatIf(data)
+        if (data.ai_text.explanation) {
+          renderAI(data);
+        }
+        else {
+          document.getElementById("aiHeader").style.display = "none"
+          document.getElementById("aiWarning").style.display = "block"
+          renderExplanations(data.explanations)
+        }
       } catch (e) {
         console.error("Ошибка what-if:", e);
       }

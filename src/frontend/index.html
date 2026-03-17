@@ -83,25 +83,13 @@
       <button class="btn" id="sellBtn" type="button">Продать</button>
     </div>
 
-    <!-- НИЗ -->
-    <div class="bottom">
-      <div class="bottomBox">
-        <h3 class="bottomTitle">Объяснение</h3>
-        <div class="placeholder" id="explanationText" aria-hidden="true"></div>
-      </div>
-      <div class="bottomBox">
-        <h3 class="bottomTitle">Подсказка</h3>
-        <div class="placeholder" id="tipText" aria-hidden="true"></div>
-      </div>
-      <div class="bottomBox">
-        <h3 class="bottomTitle">Термины</h3>
-        <div class="placeholder" id="termText" aria-hidden="true"></div>
-      </div>
-    </div>
 
-    <!-- ЗАГОЛОВОК ДЛЯ НЕЙРОСЕТИ -->
-  <div class="aiHeader">Ответ от нейросети</div>
-
+  <div class="aiWarning" id="aiWarning" style="display:none;">
+    Нейросеть временно недоступна. Ниже представлены базовые объяснения.
+  </div>
+   <!-- ЗАГОЛОВОК ДЛЯ НЕЙРОСЕТИ -->  
+  <div class="aiHeader" id="aiHeader">Ответ от нейросети</div>
+  
   <!-- НИЗ 2: нейросеть -->
   <div class="bottom bottomAI">
     <div class="bottomBox">
@@ -119,6 +107,23 @@
       <div class="placeholder" id="aiTermText" aria-hidden="true"></div>
     </div>
   </div>
+
+    <!-- НИЗ -->
+    <!-- <div class="bottom">
+      <div class="bottomBox">
+        <h3 class="bottomTitle">Объяснение</h3>
+        <div class="placeholder" id="explanationText" aria-hidden="true"></div>
+      </div>
+      <div class="bottomBox">
+        <h3 class="bottomTitle">Подсказка</h3>
+        <div class="placeholder" id="tipText" aria-hidden="true"></div>
+      </div>
+      <div class="bottomBox">
+        <h3 class="bottomTitle">Термины</h3>
+        <div class="placeholder" id="termText" aria-hidden="true"></div>
+      </div>
+    </div> -->
+ 
 </div>
 
 
