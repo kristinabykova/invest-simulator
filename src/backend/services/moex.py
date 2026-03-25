@@ -7,14 +7,12 @@ from services.cache_services import redis_client
 
 MOEX_URL = "https://iss.moex.com/iss/engines/stock/markets/shares"
 
-def get_stock_candles(ticker: str, date_from: str, date_to: str, 
-                      interval: int=10) -> list[Candle]:
+
+def get_stock_candles(
+    ticker: str, date_from: str, date_to: str, interval: int = 10
+) -> list[Candle]:
     url = f"{MOEX_URL}/securities/{ticker}/candles.json"
-    params = {
-        "interval": interval,  
-        "from": date_from,
-        "till": date_to
-    }
+    params = {"interval": interval, "from": date_from, "till": date_to}
 
     response = requests.get(url, params=params, timeout=5)
     data = response.json()
@@ -25,19 +23,22 @@ def get_stock_candles(ticker: str, date_from: str, date_to: str,
     result = []
     for candle in candles:
         item = dict(zip(columns, candle))
-        result.append({
-            "date": item["begin"],
-            "close": item["close"],
-            "high": item["high"],
-            "low": item["low"]
-        })
+        result.append(
+            {
+                "date": item["begin"],
+                "close": item["close"],
+                "high": item["high"],
+                "low": item["low"],
+            }
+        )
 
     return result
 
-def get_stock_lotsize(ticker:str) -> None | int:
+
+def get_stock_lotsize(ticker: str) -> None | int:
 
     url = f"{MOEX_URL}/securities/{ticker}.json"
-    params = {"iss.only":"securities"}
+    params = {"iss.only": "securities"}
 
     response = requests.get(url, params=params)
     response.raise_for_status()
@@ -52,30 +53,19 @@ def get_stock_lotsize(ticker:str) -> None | int:
         return d["LOTSIZE"]
     return None
 
+
 def get_cache_stock_candle(ticker: str, days: int):
     cache_key = f"stock_history:{ticker}:{days}"
     cached_data = redis_client.get(cache_key)
     if cached_data:
         return json.loads(cached_data)
-    
+
     today = date.today()
     date_from = today - timedelta(days=days)
     result = get_stock_candles(
-        ticker=ticker,
-        date_from=date_from.isoformat(),
-        date_to=today.isoformat()
+        ticker=ticker, date_from=date_from.isoformat(), date_to=today.isoformat()
     )
 
-    redis_client.setex(
-        cache_key,
-        60,  
-        json.dumps(result)
-    )
+    redis_client.setex(cache_key, 60, json.dumps(result))
 
     return result
-
-    
-
-
-
-

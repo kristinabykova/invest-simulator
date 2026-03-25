@@ -2,6 +2,7 @@ from services.moex import get_stock_candles, get_stock_lotsize
 import math
 import statistics
 
+
 def detect_trend(closes, threshold_pct_per_step=0.01) -> str | None:
     if len(closes) < 5:
         return None
@@ -24,14 +25,15 @@ def detect_trend(closes, threshold_pct_per_step=0.01) -> str | None:
 
     if slope_pct_per_step > threshold_pct_per_step:
         return "восходящий тренд"
-    
+
     elif slope_pct_per_step < -threshold_pct_per_step:
         return "нисходящий тренд"
-    
+
     else:
         return "боковой тренд"
 
-def historical_volatility(closes) -> float | None: 
+
+def historical_volatility(closes) -> float | None:
     if len(closes) < 2:
         return None
 
@@ -46,6 +48,7 @@ def historical_volatility(closes) -> float | None:
 
     return statistics.stdev(returns)
 
+
 def volatility_label(vol: float | None) -> str | None:
     if vol is None:
         return None
@@ -55,17 +58,20 @@ def volatility_label(vol: float | None) -> str | None:
         return "средняя"
     return "высокая"
 
+
 def profit(first: float, last: float, lot_size: int, lots_count: int) -> float | None:
     profit = None
     if lots_count and first and last and lot_size:
         profit = (last - first) * lot_size * lots_count
     return profit
 
+
 def roi(first: float, last: float):
     roi = None
     if first and last:
         roi = (last - first) / first * 100
     return roi
+
 
 def risk_assessment(volatility: float | None, roi: float | None) -> str | None:
     if volatility is None or roi is None:
@@ -79,25 +85,25 @@ def risk_assessment(volatility: float | None, roi: float | None) -> str | None:
 
     return "умеренный риск"
 
-def analyze_whatif(ticker: str, from_date: str, to_date: str, interval: int, lots_count: int) -> dict:
-    
+
+def analyze_whatif(
+    ticker: str, from_date: str, to_date: str, interval: int, lots_count: int
+) -> dict:
+
     candles = get_stock_candles(
-        ticker=ticker,
-        date_from=from_date,
-        date_to=to_date,
-        interval=interval
+        ticker=ticker, date_from=from_date, date_to=to_date, interval=interval
     )
-    
+
     lot_size = get_stock_lotsize(ticker)
 
     closes = [c["close"] for c in candles]
 
-    first_close = candles[0]['close']
-    last_close = candles[-1]['close']
+    first_close = candles[0]["close"]
+    last_close = candles[-1]["close"]
 
     period_high = max(c["high"] for c in candles)
     period_low = min(c["low"] for c in candles)
-    
+
     vol_raw = historical_volatility(closes)
     vol = None if vol_raw is None else vol_raw * 100
 
@@ -121,5 +127,5 @@ def analyze_whatif(ticker: str, from_date: str, to_date: str, interval: int, lot
         "trend": trend,
         "roi": roi_period,
         "profit": profit_period,
-        "risk": risk
+        "risk": risk,
     }
