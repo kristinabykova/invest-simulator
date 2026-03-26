@@ -1,4 +1,5 @@
 import jwt
+import bcrypt
 
 from core.config import Settings
 
@@ -17,3 +18,13 @@ def decode_jwt(
 ):
     decoded = jwt.decode(token, key, algorithms=algorithm)
     return decoded
+
+
+def hash_password(password: str) -> bytes:
+    salt = bcrypt.gensalt()
+    pwd_bytes = password.encode()
+    return bcrypt.hashpw(pwd_bytes, salt)
+
+
+def validate_password(password: str, hashed_password: bytes) -> bool:
+    return bcrypt.checkpw(password.encode(), hashed_password)
