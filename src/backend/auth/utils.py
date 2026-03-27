@@ -1,11 +1,11 @@
 import jwt
 import bcrypt
 
-from core.config import Settings
+from core.config import settings
 
 
 def encode_jwt(
-    payload: dict, key: str = Settings.SECRET_KEY, algorithm: str = Settings.ALGORITHM
+    payload: dict, key: str = settings.SECRET_KEY, algorithm: str = settings.ALGORITHM
 ):
     encoded = jwt.encode(payload, key, algorithm=algorithm)
     return encoded
@@ -13,8 +13,8 @@ def encode_jwt(
 
 def decode_jwt(
     token: str | bytes,
-    key: str = Settings.SECRET_KEY,
-    algorithm: str = Settings.ALGORITHM,
+    key: str = settings.SECRET_KEY,
+    algorithm: str = settings.ALGORITHM,
 ):
     decoded = jwt.decode(token, key, algorithms=algorithm)
     return decoded
