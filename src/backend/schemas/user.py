@@ -1,14 +1,16 @@
 from datetime import datetime
 from uuid import UUID
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
 
+
 class UserLogin(UserCreate):
     pass
+
 
 class UserRead(BaseModel):
     id: UUID
@@ -16,7 +18,8 @@ class UserRead(BaseModel):
     is_active: bool
     created_at: datetime
 
-    model_config = {"from_attributes": True}
+    model_config = ConfigDict(strict=True)
+
 
 class Token(BaseModel):
     access_token: str

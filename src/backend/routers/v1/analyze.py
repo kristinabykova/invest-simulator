@@ -1,12 +1,13 @@
 from fastapi import APIRouter
 from schemas.whatif import WhatIfRequest
 from services.explanation import all_explanations
-from services.whatif import analyze_whatif
+from services.analyze import analyze_whatif
 from llm.insights import build_metrics_for_llm, generate_insights, test
 
-router = APIRouter(prefix="/whatif", tags=["whatif"])
+router = APIRouter(prefix="/analyze", tags=["Analyze"])
 
-@router.post("/analyze")
+
+@router.post("/")
 def analyze(req: WhatIfRequest):
 
     result = analyze_whatif(req.ticker, req.from_, req.to, req.interval, req.lots_count)
@@ -15,7 +16,8 @@ def analyze(req: WhatIfRequest):
 
     return result
 
-@router.post("/analyze/ai")
+
+@router.post("/ai")
 async def analyze_ai(req: WhatIfRequest):
 
     result = analyze_whatif(req.ticker, req.from_, req.to, req.interval, req.lots_count)
@@ -35,5 +37,3 @@ async def analyze_ai(req: WhatIfRequest):
         result = None
 
     return result
-
-    
