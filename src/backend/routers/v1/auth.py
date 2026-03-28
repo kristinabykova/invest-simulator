@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from auth.utils import validate_password
+from auth.utils import validate_password, encode_jwt
 from crud import create_user, get_user_by_email
-from schemas.user import UserLogin, UserRead
+from schemas.user import UserLogin, UserRead, Token
 from sqlalchemy.ext.asyncio import AsyncSession
 from db.session import async_session_maker
 
@@ -40,7 +40,13 @@ async def register_user(data: UserLogin, session: AsyncSession = Depends(get_ses
     return await create_user(session, data)
 
 
-@router.post("/login")
-async def login_user(data: UserLogin, session: AsyncSession = Depends(get_session)):
+@router.post("/login", response_model=Token)
+async def login_user(
+    data: UserLogin, session: AsyncSession = Depends(get_session)
+) -> Token:
     user = await validate_auth_user(session, data)
-    return {"login": "success"}
+
+    jwt_payload = {"sub": str(user.id)}
+    token = encode_jwt(jwt_payload)
+
+    return Token(access_token=token, token_type="Bearer")
