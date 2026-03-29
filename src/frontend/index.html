@@ -10,9 +10,42 @@
   <link rel="stylesheet" href="style.css">
 </head>
 
+<div class="toast" id="toast"></div>
+
+<div class="modalOverlay hidden" id="registerModal">
+  <div class="modalBox">
+    <div class="modalTitle">Регистрация</div>
+    <input type="email" id="registerEmail" class="modalInput" placeholder="Email">
+    <input type="password" id="registerPassword" class="modalInput" placeholder="Пароль">
+    <div class="modalActions">
+      <button class="modalBtn secondaryBtn" id="registerCloseBtn" type="button">Закрыть</button>
+      <button class="modalBtn" id="registerSubmitBtn" type="button">Готово</button>
+    </div>
+  </div>
+</div>
+
+<div class="modalOverlay hidden" id="loginModal">
+  <div class="modalBox">
+    <div class="modalTitle">Вход</div>
+    <input type="email" id="loginEmail" class="modalInput" placeholder="Email">
+    <input type="password" id="loginPassword" class="modalInput" placeholder="Пароль">
+    <div class="modalActions">
+      <button class="modalBtn secondaryBtn" id="loginCloseBtn" type="button">Закрыть</button>
+      <button class="modalBtn" id="loginSubmitBtn" type="button">Готово</button>
+    </div>
+  </div>
+</div>
+
 <body>
   <div class="page">
-    <div class="topbar">Инвест-симулятор</div>
+    <div class="topbar">
+      <div class="topbarTitle">Инвест-симулятор</div>
+
+        <div class="authButtons">
+          <button class="authBtn" id="registerOpenBtn" type="button">Регистрация</button>
+          <button class="authBtn" id="loginOpenBtn" type="button">Вход</button>
+        </div>
+    </div>
 
     <div class="tabs">
       <div class="tab">термины</div>

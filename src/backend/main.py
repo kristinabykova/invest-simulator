@@ -7,18 +7,12 @@ from routers import main_router
 from db.init_db import init_db
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    await init_db()
-    yield
-
-
-app = FastAPI(title="Investment Simulator API", lifespan=lifespan)
+app = FastAPI(title="Investment Simulator API")
 app.include_router(main_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
