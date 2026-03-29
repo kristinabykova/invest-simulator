@@ -18,14 +18,17 @@ def analyze(req: WhatIfRequest):
 async def analyze_ai(req: WhatIfRequest):
     result = analyze_whatif(req.ticker, req.from_, req.to, req.interval, req.lots_count)
     metrics = build_metrics_for_llm(result, req)
+    # try:
+    #     result = await generate_insights(metrics)
+    #     print(result)
+    #     result = result.model_dump()
+    # except Exception as e:
+    #     print(result)
+    #     print("LLM ERROR:", e)
+    #     result = None
     try:
-        result = await generate_insights(metrics)
+        result = await test()
         result = result.model_dump()
     except Exception:
         result = None
-    # try:
-    #     result = await test()
-    #     result = result.model_dump()
-    # except Exception:
-    #     result = None
     return result

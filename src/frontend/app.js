@@ -490,7 +490,7 @@ async function init() {
     };
 
     try {
-      const data = await apiPostJson("/analyze", payload);
+      const data = await apiPostJson("/analyze/", payload);
 
       renderWhatIf(data);
       

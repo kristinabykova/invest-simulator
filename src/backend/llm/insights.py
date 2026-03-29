@@ -5,7 +5,7 @@ from openai import AsyncOpenAI
 import os
 
 NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
-NVIDIA_MODEL = "deepseek-ai/deepseek-v3.2"
+NVIDIA_MODEL = "meta/llama3-70b-instruct"
 
 SYSTEM_PROMPT = """
 Ты помощник для обучающего симулятора инвестиций.
@@ -28,14 +28,16 @@ SYSTEM_PROMPT = """
 - definition: до 200 символов
 """
 
+
 def get_openai_client():
     api_key = os.getenv("NVIDIA_API_KEY")
     if not api_key:
         return None
     return AsyncOpenAI(base_url=NVIDIA_BASE_URL, api_key=api_key)
 
+
 def build_metrics_for_llm(result: dict, req: WhatIfRequest) -> MetricsIn:
-    
+
     roi = result["roi"] * 100
     vol = result.get("volatility")
 
@@ -53,6 +55,7 @@ def build_metrics_for_llm(result: dict, req: WhatIfRequest) -> MetricsIn:
         risk=result.get("risk") or "неизвестно",
         lots=int(req.lots_count),
     )
+
 
 def build_user_prompt(m: MetricsIn) -> str:
     return f"""
@@ -73,7 +76,12 @@ def build_user_prompt(m: MetricsIn) -> str:
 2) tip: 1 короткая учебная подсказка (без “делай сделку”).
 3) terms: 1–2 термина, релевантные ситуации (не общие “акция/биржа”).
 Верни строго JSON.
+
+- Никаких переносов строк внутри строк JSON
+- Используй только двойные кавычки
+- Не добавляй текст вне JSON
 """
+
 
 async def generate_insights(metrics: MetricsIn) -> InsightsResponse:
     client = get_openai_client()
@@ -93,21 +101,38 @@ async def generate_insights(metrics: MetricsIn) -> InsightsResponse:
         ],
         temperature=0.4,
         top_p=0.9,
-        max_tokens=600,
+        max_tokens=400,
         extra_body={"chat_template_kwargs": {"thinking": False}},
     )
 
     content = (resp.choices[0].message.content or "").strip()
 
     if not content.startswith("{"):
-            start = content.find("{")
-            end = content.rfind("}")
-            if start != -1 and end != -1 and end > start:
-                content = content[start:end+1]
+        start = content.find("{")
+        end = content.rfind("}")
+        if start != -1 and end != -1 and end > start:
+            content = content[start : end + 1]
+
+    print(content)
 
     data = json.loads(content)
 
     return InsightsResponse.model_validate(data)
 
+
 def test():
-    return {"explanation": "все хорошо", "tip": "Обращай внимание на волатильность и ширину торгового диапазона, чтобы оценивать активность рынка.","terms": [{"term": "Боковой тренд","definition": "Ситуация на рынке, когда цена актива колеблется в горизонтальном диапазоне без явного роста или падения."},{"term": "Волатильность","definition": "Статистический показатель, который характеризует степень изменчивости цены актива за определенный период."}],"tone": "нейтрально-обучающий"}
+    return {
+        "explanation": "все хорошо",
+        "tip": "Обращай внимание на волатильность и ширину торгового диапазона, чтобы оценивать активность рынка.",
+        "terms": [
+            {
+                "term": "Боковой тренд",
+                "definition": "Ситуация на рынке, когда цена актива колеблется в горизонтальном диапазоне без явного роста или падения.",
+            },
+            {
+                "term": "Волатильность",
+                "definition": "Статистический показатель, который характеризует степень изменчивости цены актива за определенный период.",
+            },
+        ],
+        "tone": "нейтрально-обучающий",
+    }
