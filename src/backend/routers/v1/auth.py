@@ -1,32 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from auth.utils import validate_password
+from fastapi import APIRouter, Depends, HTTPException, status, Response
+from auth.utils import encode_jwt
+from auth.auth_service import get_current_user, validate_auth_user
+from db.dependencies import get_session
+from models.user import User
 from crud import create_user, get_user_by_email
-from schemas.user import UserLogin, UserRead
+from schemas.user import UserLogin, UserRead, Token
 from sqlalchemy.ext.asyncio import AsyncSession
-from db.session import async_session_maker
-
 
 router = APIRouter(prefix="/auth", tags=["Auth"])
-
-
-async def get_session():
-    async with async_session_maker() as session:
-        yield session
-
-
-async def validate_auth_user(session: AsyncSession, data: UserLogin):
-    unauthed_ex = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password"
-    )
-    user = await get_user_by_email(session, data.email)
-    if not user:
-        raise unauthed_ex
-    pwd = data.password
-    pwd_hash = user.password_hash
-    val = validate_password(pwd, pwd_hash)
-    if not val:
-        raise unauthed_ex
-    return user
 
 
 @router.post("/register", response_model=UserRead)
@@ -40,7 +21,31 @@ async def register_user(data: UserLogin, session: AsyncSession = Depends(get_ses
     return await create_user(session, data)
 
 
-@router.post("/login")
-async def login_user(data: UserLogin, session: AsyncSession = Depends(get_session)):
-    user = await validate_auth_user(session, data)
-    return {"login": "success"}
+@router.post("/login", response_model=Token)
+async def login_user(
+    response: Response,
+    data: UserLogin,
+    session: AsyncSession = Depends(get_session),
+) -> Token:
+    user = await validate_auth_user(data, session)
+
+    jwt_payload = {"sub": str(user.id)}
+    token = encode_jwt(jwt_payload)
+    response.set_cookie(
+        key="access_token",
+        value=token,
+        httponly=True,
+    )
+
+    return Token(access_token=token, token_type="Bearer")
+
+
+@router.get("/me", response_model=UserRead)
+async def get_me(current_user: User = Depends(get_current_user)):
+    return current_user
+
+
+@router.post("/logout")
+async def logout_user(response: Response):
+    response.delete_cookie(key="access_token")
+    return {"message": "Logged out"}

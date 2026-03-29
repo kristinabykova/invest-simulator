@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta, timezone
+
 import jwt
 import bcrypt
 
@@ -5,9 +7,20 @@ from core.config import settings
 
 
 def encode_jwt(
-    payload: dict, key: str = settings.SECRET_KEY, algorithm: str = settings.ALGORITHM
+    payload: dict,
+    key: str = settings.SECRET_KEY,
+    algorithm: str = settings.ALGORITHM,
+    expire_minutes: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES,
+    expire_delta: timedelta | None = None,
 ):
-    encoded = jwt.encode(payload, key, algorithm=algorithm)
+    to_encode = payload.copy()
+    now = datetime.now(timezone.utc)
+    if expire_delta:
+        expire = now + expire_delta
+    else:
+        expire = now + timedelta(minutes=expire_minutes)
+    to_encode.update(exp=expire, iat=now)
+    encoded = jwt.encode(to_encode, key, algorithm=algorithm)
     return encoded
 
 
@@ -26,5 +39,5 @@ def hash_password(password: str) -> bytes:
     return bcrypt.hashpw(pwd_bytes, salt)
 
 
-def validate_password(password: str, hashed_password: bytes) -> bool:
-    return bcrypt.checkpw(password.encode(), hashed_password)
+def validate_password(password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(password.encode(), hashed_password.encode())

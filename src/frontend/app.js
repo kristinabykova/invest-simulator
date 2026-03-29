@@ -12,6 +12,102 @@ const canvas = document.getElementById("priceChart");
 const periodSelect = document.getElementById("periodSelect");
 const wfCalcBtn = document.getElementById("wfCalcBtn");
 
+const registerOpenBtn = document.getElementById("registerOpenBtn");
+const loginOpenBtn = document.getElementById("loginOpenBtn");
+
+const registerModal = document.getElementById("registerModal");
+const loginModal = document.getElementById("loginModal");
+
+const registerCloseBtn = document.getElementById("registerCloseBtn");
+const loginCloseBtn = document.getElementById("loginCloseBtn");
+
+const registerSubmitBtn = document.getElementById("registerSubmitBtn");
+const loginSubmitBtn = document.getElementById("loginSubmitBtn");
+
+const registerEmail = document.getElementById("registerEmail");
+const registerPassword = document.getElementById("registerPassword");
+
+const loginEmail = document.getElementById("loginEmail");
+const loginPassword = document.getElementById("loginPassword");
+
+const toastEl = document.getElementById("toast");
+
+function showToast(message, type = "success") {
+  if (!toastEl) return;
+
+  toastEl.textContent = message;
+  toastEl.className = `toast show ${type}`;
+
+  setTimeout(() => {
+    toastEl.className = "toast";
+  }, 2500);
+}
+
+function openModal(modal) {
+  if (modal) modal.classList.remove("hidden");
+}
+
+function closeModal(modal) {
+  if (modal) modal.classList.add("hidden");
+}
+
+function clearAuthFields() {
+  if (registerEmail) registerEmail.value = "";
+  if (registerPassword) registerPassword.value = "";
+  if (loginEmail) loginEmail.value = "";
+  if (loginPassword) loginPassword.value = "";
+}
+
+async function registerUser() {
+  const email = registerEmail.value.trim();
+  const password = registerPassword.value.trim();
+
+  try {
+    await apiPostJson("/auth/register", { email, password });
+    closeModal(registerModal);
+    clearAuthFields();
+    showToast("Регистрация прошла успешно. Войдите в свой аккаунт.", "success");
+  } catch (e) {
+    if (e.status === 422) {
+      showToast("Введите корректный емайл", "error");
+      return;
+    }
+
+    const detail = e.data?.detail;
+
+    if (typeof detail === "string") {
+      showToast(detail, "error");
+    } else {
+      showToast("Ошибка регистрации", "error");
+    }
+  }
+}
+
+async function loginUser() {
+  const email = loginEmail.value.trim();
+  const password = loginPassword.value.trim();
+
+  try {
+    await apiPostJson("/auth/login", { email, password });
+    closeModal(loginModal);
+    clearAuthFields();
+    showToast("Вы успешно вошли", "success");
+  } catch (e) {
+    if (e.status === 422) {
+      showToast("Введите корректный емайл", "error");
+      return;
+    }
+
+    const detail = e.data?.detail;
+
+    if (typeof detail === "string") {
+      showToast(detail, "error");
+    } else {
+      showToast("Ошибка входа", "error");
+    }
+  }
+}
+
 function setCalcEnabled() {
   if (!wfCalcBtn) return;
   wfCalcBtn.disabled = !(currentStock && wfFrom && wfTo);
@@ -156,7 +252,9 @@ function renderAI(data) {
 }
 
 async function apiGetJson(path) {
-  const res = await fetch(`${API_URL}${path}`);
+  const res = await fetch(`${API_URL}${path}`, {
+    credentials: "include"
+  });
   if (!res.ok) throw new Error(`HTTP ${res.status} ${path}`);
   return res.json();
 }
@@ -165,10 +263,25 @@ async function apiPostJson(path, body) {
   const res = await fetch(`${API_URL}${path}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status} ${path}`);
-  return res.json();
+
+  let data = null;
+  try {
+    data = await res.json();
+  } catch {
+    data = null;
+  }
+
+  if (!res.ok) {
+    const error = new Error(`HTTP ${res.status} ${path}`);
+    error.status = res.status;
+    error.data = data;
+    throw error;
+  }
+
+  return data;
 }
 
 function clearSelection() {
@@ -377,12 +490,12 @@ async function init() {
     };
 
     try {
-      const data = await apiPostJson("/whatif/analyze", payload);
+      const data = await apiPostJson("/analyze/", payload);
 
       renderWhatIf(data);
       
 
-      apiPostJson("/whatif/analyze/ai", payload)
+      apiPostJson("/analyze/ai", payload)
         .then(aiData => {
 
           console.log(aiData)
@@ -408,6 +521,42 @@ async function init() {
   });
 
   setCalcEnabled();
+
+   if (registerOpenBtn) {
+    registerOpenBtn.addEventListener("click", () => openModal(registerModal));
+  }
+
+  if (loginOpenBtn) {
+    loginOpenBtn.addEventListener("click", () => openModal(loginModal));
+  }
+
+  if (registerCloseBtn) {
+    registerCloseBtn.addEventListener("click", () => closeModal(registerModal));
+  }
+
+  if (loginCloseBtn) {
+    loginCloseBtn.addEventListener("click", () => closeModal(loginModal));
+  }
+
+  if (registerSubmitBtn) {
+    registerSubmitBtn.addEventListener("click", registerUser);
+  }
+
+  if (loginSubmitBtn) {
+    loginSubmitBtn.addEventListener("click", loginUser);
+  }
+
+  if (registerModal) {
+    registerModal.addEventListener("click", (e) => {
+      if (e.target === registerModal) closeModal(registerModal);
+    });
+  }
+
+  if (loginModal) {
+    loginModal.addEventListener("click", (e) => {
+      if (e.target === loginModal) closeModal(loginModal);
+    });
+  }
 }
 
 }

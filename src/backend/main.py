@@ -1,18 +1,23 @@
+from contextlib import asynccontextmanager
+
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routers import main_router
+from db.init_db import init_db
+
 
 app = FastAPI(title="Investment Simulator API")
 app.include_router(main_router)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 @app.get("/")
 def root():
@@ -21,5 +26,3 @@ def root():
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
-
-
