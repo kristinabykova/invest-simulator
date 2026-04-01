@@ -33,9 +33,6 @@ async def validate_auth_user(
             detail="user inactive",
         )
 
-    res = await create_portfolio(user.id, session)
-    print(res.id, res.user_id, res.cash_balance, res.created_at, res.updated_at)
-
     return user
 
 
