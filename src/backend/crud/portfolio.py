@@ -16,7 +16,7 @@ async def create_portfolio(id: UUID, session: AsyncSession) -> Portfolio:
     return portfolio
 
 
-async def get_cash_balance(id_user: UUID, session: AsyncSession) -> Decimal:
+async def get_cash_balance(id_user: UUID, session: AsyncSession) -> Decimal | None:
     query = select(Portfolio).where(Portfolio.user_id == id_user)
     res = await session.execute(query)
     res = res.scalar_one_or_none()
@@ -48,9 +48,9 @@ async def update_position(data: PositionSchema, session: AsyncSession):
         )
     )
     res = await session.execute(query)
-    res = res.scalar_one_or_none
+    res = res.scalar_one_or_none()
     if res is None:
-        return create_position()
+        return create_position(data, session)
 
     avg_price = (res.quantity * res.price + data.quantity * data.price) / (
         res.quantity + data.quantity
@@ -58,6 +58,6 @@ async def update_position(data: PositionSchema, session: AsyncSession):
     res.quantity += data.quantity
     res.price = avg_price
 
-    session.commit()
-    session.refresh(res)
+    await session.commit()
+    await session.refresh(res)
     return res
