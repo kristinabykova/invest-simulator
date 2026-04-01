@@ -2,10 +2,48 @@ import requests
 import json
 from datetime import date, timedelta
 
-from schemas.whatif import Candle
+from schemas.whatif import Candle, CurrentStocks
 from services.cache_services import redis_client
 
 MOEX_URL = "https://iss.moex.com/iss/engines/stock/markets/shares"
+
+
+def get_current_stock(ticker: str) -> CurrentStocks:
+    url = f"{MOEX_URL}/securities/{ticker}.json"
+    response = requests.get(url)
+
+    response.raise_for_status()
+    data = response.json()
+
+    columns = data["marketdata"]["columns"]
+    rows = data["marketdata"]["data"]
+
+    board_idx = columns.index("BOARDID")
+    tqbr_row = None
+
+    for row in rows:
+        if row[board_idx] == "TQBR":
+            tqbr_row = row
+            break
+    if not tqbr_row:
+        return {"offer": None, "bid": None, "last": None}
+
+    def get(field):
+        return tqbr_row[columns.index(field)]
+
+    offer = get("OFFER")
+    bid = get("BID")
+    last = get("LAST")
+    lcurrent = get("LCURRENTPRICE")
+    market = get("MARKETPRICE")
+
+    price = last or lcurrent or market
+
+    return {
+        "offer": offer or price,
+        "bid": bid or price,
+        "last": price,
+    }
 
 
 def get_stock_candles(
@@ -15,6 +53,7 @@ def get_stock_candles(
     params = {"interval": interval, "from": date_from, "till": date_to}
 
     response = requests.get(url, params=params, timeout=5)
+    response.raise_for_status()
     data = response.json()
 
     candles = data["candles"]["data"]

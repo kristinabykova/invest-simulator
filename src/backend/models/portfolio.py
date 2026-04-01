@@ -26,8 +26,7 @@ class Position(Base):
     __tablename__ = "positions"
     id: Mapped[pk]
     portfolio_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey("portfolio.id", ondelete="CASCADE"),
-        unique=True,
+        ForeignKey("portfolios.id", ondelete="CASCADE"), unique=False
     )
     ticker: Mapped[str]
     quantity: Mapped[Optional[int]]

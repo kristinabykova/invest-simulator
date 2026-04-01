@@ -5,8 +5,9 @@ from jwt import ExpiredSignatureError, InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.utils import validate_password
+from crud.portfolio import create_portfolio
 from db.dependencies import get_session
-from crud import get_user_by_email, get_user_by_id
+from crud.user import get_user_by_email, get_user_by_id
 from schemas.user import UserLogin
 from auth.utils import decode_jwt, validate_password
 
@@ -31,6 +32,9 @@ async def validate_auth_user(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="user inactive",
         )
+
+    res = await create_portfolio(user.id, session)
+    print(res.id, res.user_id, res.cash_balance, res.created_at, res.updated_at)
 
     return user
 

@@ -1,6 +1,7 @@
 from db.session import engine
 from db.base import Base
 from models.user import User
+from models.portfolio import Portfolio
 
 
 async def init_db():
