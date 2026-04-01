@@ -16,6 +16,10 @@ class BuyStock(BaseModel):
     qty: int = Field(ge=1)
 
 
+class SellStock(BuyStock):
+    pass
+
+
 class PositionSchema(BaseModel):
     portfolio_id: UUID
     ticker: str

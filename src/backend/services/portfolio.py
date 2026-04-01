@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from schemas.stock_operations import BuyStock, PositionSchema
+from schemas.stock_operations import BuyStock, PositionSchema, SellStock
 from crud.portfolio import get_portfolio_by_id, upsert_position
 from models.user import User
 from services.moex import get_current_stock
@@ -35,7 +35,7 @@ async def buy_stock(data: BuyStock, current_user: User, session: AsyncSession):
     portfolio.cash_balance -= total_cost
 
     position = PositionSchema(
-        portfolio_id=current_user.id,
+        portfolio_id=portfolio.id,
         ticker=data.ticker,
         quantity=data.qty,
         price=Decimal(current_buy),

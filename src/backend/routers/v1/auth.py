@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
 from auth.utils import encode_jwt
 from auth.auth_service import get_current_user, validate_auth_user
+from crud.portfolio import create_portfolio
 from db.dependencies import get_session
 from models.user import User
 from crud.user import create_user, get_user_by_email
@@ -18,7 +19,9 @@ async def register_user(data: UserLogin, session: AsyncSession = Depends(get_ses
             status_code=status.HTTP_409_CONFLICT,
             detail="User with email already exists",
         )
-    return await create_user(session, data)
+    user = await create_user(session, data)
+    res = await create_portfolio(user.id, session)
+    return user
 
 
 @router.post("/login", response_model=Token)
