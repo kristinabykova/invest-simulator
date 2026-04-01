@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.auth_service import get_current_user
-from schemas.whatif import BuyStock
+from schemas.stock_operations import BuyStock
 from crud.portfolio import get_cash_balance, update_cash_balance
 from db.dependencies import get_session
 from models.user import User

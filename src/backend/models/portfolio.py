@@ -30,5 +30,5 @@ class Position(Base):
     )
     ticker: Mapped[str]
     quantity: Mapped[Optional[int]]
-    avg_price: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
+    price: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
     updated_at: Mapped[updated_time]

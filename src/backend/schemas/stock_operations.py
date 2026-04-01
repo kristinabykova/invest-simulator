@@ -17,7 +17,7 @@ class BuyStock(BaseModel):
 
 
 class PositionSchema(BaseModel):
-    position_id: UUID
+    portfolio_id: UUID
     ticker: str
     quantity: int = Field(ge=1)
-    avg_price: Decimal
+    price: Decimal

@@ -1,6 +1,6 @@
 from decimal import Decimal
 from uuid import UUID
-from sqlalchemy import select, update
+from sqlalchemy import and_, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from schemas.stock_operations import PositionSchema
@@ -38,3 +38,26 @@ async def create_position(data: PositionSchema, session: AsyncSession):
     session.add(position)
     await session.commit()
     await session.refresh(position)
+
+
+async def update_position(data: PositionSchema, session: AsyncSession):
+    query = select(Position).where(
+        and_(
+            Position.portfolio_id == data.portfolio_id,
+            Position.ticker == data.ticker,
+        )
+    )
+    res = await session.execute(query)
+    res = res.scalar_one_or_none
+    if res is None:
+        return create_position()
+
+    avg_price = (res.quantity * res.price + data.quantity * data.price) / (
+        res.quantity + data.quantity
+    )
+    res.quantity += data.quantity
+    res.price = avg_price
+
+    session.commit()
+    session.refresh(res)
+    return res

@@ -2,7 +2,8 @@ import requests
 import json
 from datetime import date, timedelta
 
-from schemas.whatif import Candle, CurrentStocks
+from schemas.stock_operations import CurrentStocks
+from schemas.whatif import Candle
 from services.cache_services import redis_client
 
 MOEX_URL = "https://iss.moex.com/iss/engines/stock/markets/shares"
