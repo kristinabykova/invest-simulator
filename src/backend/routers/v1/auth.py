@@ -3,7 +3,7 @@ from auth.utils import encode_jwt
 from auth.auth_service import get_current_user, validate_auth_user
 from db.dependencies import get_session
 from models.user import User
-from crud import create_user, get_user_by_email
+from crud.user import create_user, get_user_by_email
 from schemas.user import UserLogin, UserRead, Token
 from sqlalchemy.ext.asyncio import AsyncSession
 

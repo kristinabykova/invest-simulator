@@ -1,5 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
-from services.moex import get_stock_lotsize, get_cache_stock_candle
+from services.moex import (
+    get_stock_lotsize,
+    get_cache_stock_candle,
+)
 from services.stocks import list_of_stocks, is_supported_ticker
 from schemas.whatif import Candle, LotSize
 
@@ -11,6 +14,7 @@ def get_stocks():
     return list_of_stocks()
 
 
+@router.get("/{ticker}/current")
 @router.get("/{ticker}/lotsize", response_model=LotSize)
 def get_lotsize(ticker: str) -> LotSize:
     if not is_supported_ticker(ticker):
