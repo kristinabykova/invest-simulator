@@ -3,6 +3,7 @@ from uuid import UUID
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from schemas.stock_operations import PositionSchema
 from models.portfolio import Portfolio, Position
 
 
@@ -32,14 +33,8 @@ async def update_cash_balance(id_user: UUID, cash: Decimal, session: AsyncSessio
     await session.commit()
 
 
-async def create_position(
-    p_id: UUID, ticker: str, qty: int, price: Decimal, session: AsyncSession
-):
-    position = Position()
-    position.portfolio_id = p_id
-    position.ticker = ticker
-    position.quantity = qty
-    position.avg_price = price
+async def create_position(data: PositionSchema, session: AsyncSession):
+    position = Position(**data.model_dump())
     session.add(position)
     await session.commit()
     await session.refresh(position)
