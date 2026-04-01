@@ -30,14 +30,7 @@ async def create_position(data: PositionSchema, session: AsyncSession):
 
 
 async def upsert_position(data: PositionSchema, session: AsyncSession):
-    query = select(Position).where(
-        and_(
-            Position.portfolio_id == data.portfolio_id,
-            Position.ticker == data.ticker,
-        )
-    )
-    res = await session.execute(query)
-    res = res.scalar_one_or_none()
+    res = await get_position(data.portfolio_id, data.ticker, session)
     if res is None:
         return await create_position(data, session)
 
@@ -57,13 +50,6 @@ async def get_positions_by_portfolio_id(p_id: UUID, session: AsyncSession):
     return res
 
 
-async def delete_position(p_id: UUID, ticker: str, session: AsyncSession):
-    stmt = delete(Position).where(
-        and_(Position.portfolio_id == p_id, Position.ticker == ticker)
-    )
-    await session.execute(stmt)
-
-
 async def get_position(p_id: UUID, ticker: str, session: AsyncSession):
     stmt = select(Position).where(
         and_(Position.portfolio_id == p_id, Position.ticker == ticker)
@@ -73,13 +59,9 @@ async def get_position(p_id: UUID, ticker: str, session: AsyncSession):
     return res
 
 
-async def update_delelete_position(
-    p_id: UUID, ticker: str, qty: int, session: AsyncSession
-):
-    stmt = select(Position).where(
-        and_(Position.portfolio_id == p_id, Position.ticker == ticker)
-    )
-    res = await session.execute(stmt)
-    res = res.scalar_one_or_none()
-    if res is None:
+async def update_delete_position(position: Position, qty: int, session: AsyncSession):
+    if position.quantity == qty:
+        await session.delete(position)
         return None
+    position.quantity -= qty
+    return position

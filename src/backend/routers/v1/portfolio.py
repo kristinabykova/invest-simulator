@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.auth_service import get_current_user
 from crud.portfolio import get_portfolio_by_id, get_positions_by_portfolio_id
-from services.portfolio import buy_stock
+from services.portfolio import buy_stock, sell_stock
 from schemas.stock_operations import BuyStock, SellStock
 from db.dependencies import get_session
 from models.user import User
@@ -20,6 +20,16 @@ async def make_buy(
     session: AsyncSession = Depends(get_session),
 ):
     res = await buy_stock(data, current_user, session)
+    return res
+
+
+@router.post("/sell")
+async def make_sell(
+    data: SellStock,
+    current_user: User = Depends(get_current_user),
+    session: AsyncSession = Depends(get_session),
+):
+    res = await sell_stock(data, current_user, session)
     return res
 
 
