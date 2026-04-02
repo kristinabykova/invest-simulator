@@ -31,42 +31,49 @@ async def buy_stock(
             detail="Покупка временно недоступна",
         )
 
-    portfolio = await get_portfolio_by_id(current_user.id, session)
-    if portfolio is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Записи с таким user_id не существует",
+    buy_price = Decimal(str(current_buy))
+    total_cost = buy_price * Decimal(data.qty)
+
+    try:
+        portfolio = await get_portfolio_by_id(current_user.id, session)
+        if portfolio is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Портфель не найден",
+            )
+
+        if total_cost > portfolio.cash_balance:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Недостаточно средств",
+            )
+
+        portfolio.cash_balance -= total_cost
+
+        position_data = PositionSchema(
+            portfolio_id=portfolio.id,
+            ticker=data.ticker,
+            quantity=data.qty,
+            price=buy_price,
         )
 
-    total_cost = Decimal(str(current_buy)) * Decimal(data.qty)
+        res = await upsert_position(position_data, session)
 
-    if total_cost > portfolio.cash_balance:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Недостаточно средств",
-        )
-    portfolio.cash_balance -= total_cost
+        await session.commit()
+        await session.refresh(portfolio)
+        await session.refresh(res)
 
-    position = PositionSchema(
-        portfolio_id=portfolio.id,
-        ticker=data.ticker,
-        quantity=data.qty,
-        price=Decimal(current_buy),
-    )
-
-    res = await upsert_position(position, session)
-
-    await session.commit()
-    await session.refresh(portfolio)
-
-    return {
-        "msg": "Покупка выполнена",
-        "ticker": res.ticker,
-        "qty": res.quantity,
-        "price": str(current_buy),
-        "total_cost": str(total_cost),
-        "cash_balance": str(portfolio.cash_balance),
-    }
+        return {
+            "msg": "Покупка выполнена",
+            "ticker": res.ticker,
+            "qty": res.quantity,
+            "price": current_buy,
+            "total_cost": total_cost,
+            "cash_balance": portfolio.cash_balance,
+        }
+    except Exception:
+        await session.rollback()
+        raise
 
 
 async def sell_stock(
@@ -78,46 +85,53 @@ async def sell_stock(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Продажа временно недоступна"
         )
+
     total_cost = Decimal(str(current_sell)) * Decimal(data.qty)
 
-    portfolio = await get_portfolio_by_id(current_user.id, session)
-    if portfolio is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Записи с таким user_id не существует",
-        )
+    try:
+        portfolio = await get_portfolio_by_id(current_user.id, session)
+        if portfolio is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Записи с таким user_id не существует",
+            )
 
-    portfolio.cash_balance += total_cost
+        position = await get_position(portfolio.id, data.ticker, session)
 
-    position = await get_position(portfolio.id, data.ticker, session)
+        if position is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Нет записи об этой акции"
+            )
 
-    if position is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Нет записи об этой акции"
-        )
+        if data.qty > position.quantity:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Недостаточно акций для продажи",
+            )
 
-    if data.qty > position.quantity:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Недостаточно акций для продажи",
-        )
+        portfolio.cash_balance += total_cost
 
-    res = await update_delete_position(position, data.qty, session)
+        res = await update_delete_position(position, data.qty, session)
 
-    await session.commit()
-    await session.refresh(portfolio)
+        await session.commit()
+        await session.refresh(portfolio)
+        if res is not None:
+            await session.refresh(res)
 
-    if res is None:
+        if res is None:
+            return {
+                "msg": "Проданы все лоты акции",
+                "cash_balance": str(portfolio.cash_balance),
+            }
+
         return {
-            "msg": "Проданы все лоты акции",
-            "cash_balance": str(portfolio.cash_balance),
+            "msg": "Продажа выполнена",
+            "ticker": res.ticker,
+            "qty": res.quantity,
+            "price": current_sell,
+            "total_cost": total_cost,
+            "cash_balance": portfolio.cash_balance,
         }
-
-    return {
-        "msg": "Продажа выполнена",
-        "ticker": res.ticker,
-        "qty": res.quantity,
-        "price": str(current_sell),
-        "total_cost": str(total_cost),
-        "cash_balance": str(portfolio.cash_balance),
-    }
+    except Exception:
+        await session.rollback()
+        raise

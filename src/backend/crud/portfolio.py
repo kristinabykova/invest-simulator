@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import List
 from uuid import UUID
 from sqlalchemy import and_, delete, select, update
@@ -50,7 +49,6 @@ async def get_positions_by_portfolio_id(
     query = select(Position).where(Position.portfolio_id == p_id)
     res = await session.execute(query)
     res = res.scalars().all()
-    print(res)
     return res
 
 
