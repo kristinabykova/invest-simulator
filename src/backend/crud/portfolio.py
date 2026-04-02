@@ -1,4 +1,5 @@
 from decimal import Decimal
+from typing import List
 from uuid import UUID
 from sqlalchemy import and_, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -16,20 +17,20 @@ async def create_portfolio(id: UUID, session: AsyncSession) -> Portfolio:
     return portfolio
 
 
-async def get_portfolio_by_id(id_user: UUID, session: AsyncSession) -> Decimal | None:
+async def get_portfolio_by_id(id_user: UUID, session: AsyncSession) -> Portfolio | None:
     query = select(Portfolio).where(Portfolio.user_id == id_user)
     res = await session.execute(query)
     res = res.scalar_one_or_none()
     return res
 
 
-async def create_position(data: PositionSchema, session: AsyncSession):
+async def create_position(data: PositionSchema, session: AsyncSession) -> Position:
     position = Position(**data.model_dump())
     session.add(position)
     return position
 
 
-async def upsert_position(data: PositionSchema, session: AsyncSession):
+async def upsert_position(data: PositionSchema, session: AsyncSession) -> Position:
     res = await get_position(data.portfolio_id, data.ticker, session)
     if res is None:
         return await create_position(data, session)
@@ -43,14 +44,19 @@ async def upsert_position(data: PositionSchema, session: AsyncSession):
     return res
 
 
-async def get_positions_by_portfolio_id(p_id: UUID, session: AsyncSession):
+async def get_positions_by_portfolio_id(
+    p_id: UUID, session: AsyncSession
+) -> List[Position]:
     query = select(Position).where(Position.portfolio_id == p_id)
     res = await session.execute(query)
     res = res.scalars().all()
+    print(res)
     return res
 
 
-async def get_position(p_id: UUID, ticker: str, session: AsyncSession):
+async def get_position(
+    p_id: UUID, ticker: str, session: AsyncSession
+) -> Position | None:
     stmt = select(Position).where(
         and_(Position.portfolio_id == p_id, Position.ticker == ticker)
     )
@@ -59,7 +65,9 @@ async def get_position(p_id: UUID, ticker: str, session: AsyncSession):
     return res
 
 
-async def update_delete_position(position: Position, qty: int, session: AsyncSession):
+async def update_delete_position(
+    position: Position, qty: int, session: AsyncSession
+) -> Position | None:
     if position.quantity == qty:
         await session.delete(position)
         return None

@@ -1,3 +1,4 @@
+from typing import Optional
 import uuid
 
 from fastapi import Depends, HTTPException, status, Cookie
@@ -5,7 +6,7 @@ from jwt import ExpiredSignatureError, InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from auth.utils import validate_password
-from crud.portfolio import create_portfolio
+from models.user import User
 from db.dependencies import get_session
 from crud.user import get_user_by_email, get_user_by_id
 from schemas.user import UserLogin
@@ -14,7 +15,7 @@ from auth.utils import decode_jwt, validate_password
 
 async def validate_auth_user(
     data: UserLogin, session: AsyncSession = Depends(get_session)
-):
+) -> Optional[User]:
     unauthed_ex = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password"
     )
@@ -39,7 +40,7 @@ async def validate_auth_user(
 async def get_current_user(
     access_token: str | None = Cookie(None),
     session: AsyncSession = Depends(get_session),
-):
+) -> Optional[User]:
     if access_token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
