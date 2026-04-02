@@ -22,7 +22,7 @@ from services.moex import get_current_stock
 async def buy_stock(
     data: BuyStock, current_user: User, session: AsyncSession
 ) -> ResultOperation:
-    stock_data = get_current_stock(data.ticker)
+    stock_data = await get_current_stock(data.ticker)
     current_buy = stock_data["offer"]
 
     if current_buy is None:
@@ -72,7 +72,7 @@ async def buy_stock(
 async def sell_stock(
     data: SellStock, current_user: User, session: AsyncSession
 ) -> ResultOperation | SellAll:
-    stock_data = get_current_stock(data.ticker)
+    stock_data = await get_current_stock(data.ticker)
     current_sell = stock_data["bid"]
     if current_sell is None:
         raise HTTPException(
