@@ -5,6 +5,7 @@ export const wfCalcBtn = document.getElementById("wfCalcBtn");
 
 export const registerOpenBtn = document.getElementById("registerOpenBtn");
 export const loginOpenBtn = document.getElementById("loginOpenBtn");
+export const logoutBtn = document.getElementById("logoutBtn");
 
 export const registerModal = document.getElementById("registerModal");
 export const loginModal = document.getElementById("loginModal");
@@ -22,3 +23,9 @@ export const loginEmail = document.getElementById("loginEmail");
 export const loginPassword = document.getElementById("loginPassword");
 
 export const toastEl = document.getElementById("toast");
+
+export const portfolioTickerSelect = document.getElementById("portfolioTickerSelect");
+export const portfolioValue = document.getElementById("portfolioValue");
+export const buyBtn = document.getElementById("buyBtn");
+export const sellBtn = document.getElementById("sellBtn");
+export const tradeSum = document.getElementById("tradeSum");

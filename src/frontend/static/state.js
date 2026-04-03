@@ -4,4 +4,5 @@ export const state = {
   chart: null,
   wfFrom: null,
   wfTo: null,
+  isAuthenticated: false,
 };

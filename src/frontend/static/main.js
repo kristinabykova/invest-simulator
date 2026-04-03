@@ -4,18 +4,22 @@ import {
   wfCalcBtn,
   registerOpenBtn,
   loginOpenBtn,
+  logoutBtn,
   registerModal,
   loginModal,
   registerCloseBtn,
   loginCloseBtn,
   registerSubmitBtn,
   loginSubmitBtn,
+  buyBtn,
+  sellBtn,
 } from "./dom.js";
 import { apiGetJson, apiPostJson } from "./api.js";
-import { registerUser, loginUser } from "./auth.js";
+import { registerUser, loginUser, logoutUser } from "./auth.js";
 import { openModal, closeModal } from "./utils.js";
-import { renderStocksList } from "./stocks.js";
+import { renderStocksList, loadChart } from "./stocks.js";
 import { setCalcEnabled, renderWhatIf, renderAI, renderExplanations } from "./whatif.js";
+import { refreshPortfolioUI, buySelectedStock, sellSelectedStock } from "./portfolio.js";
 
 async function init() {
   try {
@@ -25,12 +29,12 @@ async function init() {
     console.error("Ошибка загрузки акций:", err);
   }
 
+  await refreshPortfolioUI();
+
   if (periodSelect) {
     periodSelect.addEventListener("change", () => {
       state.currentDays = Number(periodSelect.value);
-      if (state.currentStock) {
-        import("./stocks.js").then(({ loadChart }) => loadChart(state.currentStock));
-      }
+      if (state.currentStock) loadChart(state.currentStock);
     });
   }
 
@@ -48,13 +52,10 @@ async function init() {
 
       try {
         const data = await apiPostJson("/analyze/", payload);
-
         renderWhatIf(data);
 
         apiPostJson("/analyze/ai", payload)
           .then(aiData => {
-            console.log(aiData);
-
             if (aiData) {
               renderAI(aiData);
             } else {
@@ -71,44 +72,71 @@ async function init() {
         console.error("Ошибка what-if:", e);
       }
     });
+  }
 
-    setCalcEnabled();
+  setCalcEnabled();
 
-    if (registerOpenBtn) {
-      registerOpenBtn.addEventListener("click", () => openModal(registerModal));
-    }
+  if (registerOpenBtn) {
+    registerOpenBtn.addEventListener("click", () => openModal(registerModal));
+  }
 
-    if (loginOpenBtn) {
-      loginOpenBtn.addEventListener("click", () => openModal(loginModal));
-    }
+  if (loginOpenBtn) {
+    loginOpenBtn.addEventListener("click", () => openModal(loginModal));
+  }
 
-    if (registerCloseBtn) {
-      registerCloseBtn.addEventListener("click", () => closeModal(registerModal));
-    }
+  if (registerCloseBtn) {
+    registerCloseBtn.addEventListener("click", () => closeModal(registerModal));
+  }
 
-    if (loginCloseBtn) {
-      loginCloseBtn.addEventListener("click", () => closeModal(loginModal));
-    }
+  if (loginCloseBtn) {
+    loginCloseBtn.addEventListener("click", () => closeModal(loginModal));
+  }
 
-    if (registerSubmitBtn) {
-      registerSubmitBtn.addEventListener("click", registerUser);
-    }
+  if (registerSubmitBtn) {
+    registerSubmitBtn.addEventListener("click", async () => {
+      const ok = await registerUser();
+      if (ok) {
+        await refreshPortfolioUI();
+      }
+    });
+  }
 
-    if (loginSubmitBtn) {
-      loginSubmitBtn.addEventListener("click", loginUser);
-    }
+  if (loginSubmitBtn) {
+    loginSubmitBtn.addEventListener("click", async () => {
+      const ok = await loginUser();
+      if (ok) {
+        await refreshPortfolioUI();
+      }
+    });
+  }
 
-    if (registerModal) {
-      registerModal.addEventListener("click", (e) => {
-        if (e.target === registerModal) closeModal(registerModal);
-      });
-    }
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      const ok = await logoutUser();
+      if (ok) {
+        await refreshPortfolioUI();
+      }
+    });
+  }
 
-    if (loginModal) {
-      loginModal.addEventListener("click", (e) => {
-        if (e.target === loginModal) closeModal(loginModal);
-      });
-    }
+  if (buyBtn) {
+    buyBtn.addEventListener("click", buySelectedStock);
+  }
+
+  if (sellBtn) {
+    sellBtn.addEventListener("click", sellSelectedStock);
+  }
+
+  if (registerModal) {
+    registerModal.addEventListener("click", (e) => {
+      if (e.target === registerModal) closeModal(registerModal);
+    });
+  }
+
+  if (loginModal) {
+    loginModal.addEventListener("click", (e) => {
+      if (e.target === loginModal) closeModal(loginModal);
+    });
   }
 }
 

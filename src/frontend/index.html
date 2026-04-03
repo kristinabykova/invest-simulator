@@ -4,9 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Инвест-симулятор</title>
-  
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -41,10 +40,11 @@
     <div class="topbar">
       <div class="topbarTitle">Инвест-симулятор</div>
 
-        <div class="authButtons">
-          <button class="authBtn" id="registerOpenBtn" type="button">Регистрация</button>
-          <button class="authBtn" id="loginOpenBtn" type="button">Вход</button>
-        </div>
+      <div class="authButtons">
+        <button class="authBtn" id="registerOpenBtn" type="button">Регистрация</button>
+        <button class="authBtn" id="loginOpenBtn" type="button">Вход</button>
+        <button class="authBtn hidden" id="logoutBtn" type="button">Выход</button>
+      </div>
     </div>
 
     <div class="tabs">
@@ -54,14 +54,12 @@
     </div>
 
     <div class="main">
-      <!-- ЛЕВО -->
       <section class="panel left" aria-label="Список инструментов">
         <div class="stocklist" id="stockList">
           <div class="stocks" id="stocks"></div>
         </div>
       </section>
 
-      <!-- ЦЕНТР -->
       <section class="panel center" aria-label="График">
         <div class="chartWrap">
           <div class="periodSelect">
@@ -76,7 +74,6 @@
         </div>
       </section>
 
-      <!-- ПРАВО -->
       <section class="panel right" aria-label="Что если">
         <h2 class="whatifTitle">Анализ периода</h2>
 
@@ -89,22 +86,24 @@
         </div>
 
         <div class="whatifText" id="whatIfBlock">
-
-          <div>Цена открытия — <b><span id="wfOpen">—</b></span></div>
-          <div>Цена закрытия — <b><span id="wfClose">—</b></span></div>
-          <div>Максимум за период — <b><span id="wfMax">—</b></span></div>
-          <div>Минимум за период — <b><span id="wfMin">—</b></span></div>
-          <div>Прибыль за период — <b><span id="wfPft">—</b></span></div>
-          <div>Волатильность — <b><span id="wfVol">—</b></span></div>
-          <div>Тип тренда — <b><span id="wfTrd">—</b></span></div>
-          <div>Доходность за период — <b><span id="wfRoi">—</b></span></div>
-          <div>Риск — <b><span id="wfRisk">—</b></span></div>
+          <div>Цена открытия — <b><span id="wfOpen">—</span></b></div>
+          <div>Цена закрытия — <b><span id="wfClose">—</span></b></div>
+          <div>Максимум за период — <b><span id="wfMax">—</span></b></div>
+          <div>Минимум за период — <b><span id="wfMin">—</span></b></div>
+          <div>Прибыль за период — <b><span id="wfPft">—</span></b></div>
+          <div>Волатильность — <b><span id="wfVol">—</span></b></div>
+          <div>Тип тренда — <b><span id="wfTrd">—</span></b></div>
+          <div>Доходность за период — <b><span id="wfRoi">—</span></b></div>
+          <div>Риск — <b><span id="wfRisk">—</span></b></div>
         </div>
       </section>
     </div>
 
-    <!-- Ввод суммы + кнопки -->
     <div class="tradeRow">
+      <div class="smallLabel">Мои акции</div>
+      <select id="portfolioTickerSelect" class="tradeSelect" disabled title="Войдите в аккаунт">
+        <option value="">—</option>
+      </select>
 
       <div class="smallLabelLot">Размер лота</div>
       <span id="lotInfo" class="tradeValue">—</span>
@@ -114,53 +113,37 @@
 
       <button class="btn" id="buyBtn" type="button">Купить</button>
       <button class="btn" id="sellBtn" type="button">Продать</button>
+
+      <div class="portfolioValueWrap">
+        <span class="portfolioValueLabel">Портфель</span>
+        <span id="portfolioValue" class="portfolioValue portfolioValueDisabled" title="Войдите в аккаунт">100000.00</span>
+      </div>
     </div>
 
-
-  <div class="aiWarning" id="aiWarning" style="display:none;">
-    Нейросеть временно недоступна. Ниже представлены базовые объяснения.
-  </div>
-   <!-- ЗАГОЛОВОК ДЛЯ НЕЙРОСЕТИ -->  
-  <div class="aiHeader" id="aiHeader">Ответ от нейросети</div>
-  
-  <!-- НИЗ 2: нейросеть -->
-  <div class="bottom bottomAI">
-    <div class="bottomBox">
-      <h3 class="bottomTitle">Объяснение</h3>
-      <div class="placeholder" id="aiExplanationText" aria-hidden="true"></div>
+    <div class="aiWarning" id="aiWarning" style="display:none;">
+      Нейросеть временно недоступна. Ниже представлены базовые объяснения.
     </div>
 
-    <div class="bottomBox">
-      <h3 class="bottomTitle">Подсказка</h3>
-      <div class="placeholder" id="aiTipText" aria-hidden="true"></div>
-    </div>
+    <div class="aiHeader" id="aiHeader">Ответ от нейросети</div>
 
-    <div class="bottomBox">
-      <h3 class="bottomTitle">Термины</h3>
-      <div class="placeholder" id="aiTermText" aria-hidden="true"></div>
-    </div>
-  </div>
-
-    <!-- НИЗ -->
-    <!-- <div class="bottom">
+    <div class="bottom bottomAI">
       <div class="bottomBox">
         <h3 class="bottomTitle">Объяснение</h3>
-        <div class="placeholder" id="explanationText" aria-hidden="true"></div>
+        <div class="placeholder" id="aiExplanationText" aria-hidden="true"></div>
       </div>
+
       <div class="bottomBox">
         <h3 class="bottomTitle">Подсказка</h3>
-        <div class="placeholder" id="tipText" aria-hidden="true"></div>
+        <div class="placeholder" id="aiTipText" aria-hidden="true"></div>
       </div>
+
       <div class="bottomBox">
         <h3 class="bottomTitle">Термины</h3>
-        <div class="placeholder" id="termText" aria-hidden="true"></div>
+        <div class="placeholder" id="aiTermText" aria-hidden="true"></div>
       </div>
-    </div> -->
- 
-</div>
+    </div>
+  </div>
 
-
-  <script src="app.js"></script>
+  <script type="module" src="./static/main.js"></script>
 </body>
 </html>
-

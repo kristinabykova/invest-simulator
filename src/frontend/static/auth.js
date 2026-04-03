@@ -25,10 +25,11 @@ export async function registerUser() {
     closeModal(registerModal);
     clearAuthFields();
     showToast("Регистрация прошла успешно. Войдите в свой аккаунт.", "success");
+    return true;
   } catch (e) {
     if (e.status === 422) {
       showToast("Введите корректный емайл", "error");
-      return;
+      return false;
     }
 
     const detail = e.data?.detail;
@@ -38,6 +39,8 @@ export async function registerUser() {
     } else {
       showToast("Ошибка регистрации", "error");
     }
+
+    return false;
   }
 }
 
@@ -50,10 +53,11 @@ export async function loginUser() {
     closeModal(loginModal);
     clearAuthFields();
     showToast("Вы успешно вошли", "success");
+    return true;
   } catch (e) {
     if (e.status === 422) {
       showToast("Введите корректный емайл", "error");
-      return;
+      return false;
     }
 
     const detail = e.data?.detail;
@@ -63,5 +67,18 @@ export async function loginUser() {
     } else {
       showToast("Ошибка входа", "error");
     }
+
+    return false;
+  }
+}
+
+export async function logoutUser() {
+  try {
+    await apiPostJson("/auth/logout", {});
+    showToast("Вы вышли из аккаунта", "success");
+    return true;
+  } catch (e) {
+    showToast("Ошибка выхода", "error");
+    return false;
   }
 }
