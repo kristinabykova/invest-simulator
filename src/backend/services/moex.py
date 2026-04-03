@@ -1,6 +1,7 @@
 import requests
 import json
 from datetime import date, timedelta
+import httpx
 
 from schemas.stock_operations import CurrentStocks
 from schemas.whatif import Candle
@@ -9,9 +10,11 @@ from services.cache_services import redis_client
 MOEX_URL = "https://iss.moex.com/iss/engines/stock/markets/shares"
 
 
-def get_current_stock(ticker: str) -> CurrentStocks:
+async def get_current_stock(ticker: str) -> CurrentStocks:
     url = f"{MOEX_URL}/securities/{ticker}.json"
-    response = requests.get(url)
+
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
 
     response.raise_for_status()
     data = response.json()

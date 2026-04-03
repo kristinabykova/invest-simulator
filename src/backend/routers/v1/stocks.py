@@ -14,7 +14,6 @@ def get_stocks():
     return list_of_stocks()
 
 
-@router.get("/{ticker}/current")
 @router.get("/{ticker}/lotsize", response_model=LotSize)
 def get_lotsize(ticker: str) -> LotSize:
     if not is_supported_ticker(ticker):

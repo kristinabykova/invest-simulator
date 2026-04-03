@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, timezone
+from typing import Any
 
 import jwt
 import bcrypt
@@ -12,7 +13,7 @@ def encode_jwt(
     algorithm: str = settings.ALGORITHM,
     expire_minutes: int = settings.ACCESS_TOKEN_EXPIRE_MINUTES,
     expire_delta: timedelta | None = None,
-):
+) -> str:
     to_encode = payload.copy()
     now = datetime.now(timezone.utc)
     if expire_delta:
@@ -28,7 +29,7 @@ def decode_jwt(
     token: str | bytes,
     key: str = settings.SECRET_KEY,
     algorithm: str = settings.ALGORITHM,
-):
+) -> dict[str, Any]:
     decoded = jwt.decode(token, key, algorithms=algorithm)
     return decoded
 
