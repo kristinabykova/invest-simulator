@@ -1,4 +1,4 @@
-from services.moex import get_stock_candles, get_stock_lotsize
+from services.moex import get_stock_candles, get_cache_stock_lotsize
 import math
 import statistics
 
@@ -94,7 +94,7 @@ def analyze_whatif(
         ticker=ticker, date_from=from_date, date_to=to_date, interval=interval
     )
 
-    lot_size = get_stock_lotsize(ticker)
+    lot_size = get_cache_stock_lotsize(ticker)
 
     closes = [c["close"] for c in candles]
 

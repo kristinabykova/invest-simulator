@@ -78,7 +78,12 @@ def get_stock_candles(
     return result
 
 
-def get_stock_lotsize(ticker: str) -> None | int:
+def get_cache_stock_lotsize(ticker: str) -> int | None:
+    cache_key = f"stock_lotsize:{ticker}"
+
+    cached_data = redis_client.get(cache_key)
+    if cached_data:
+        return int(cached_data)
 
     url = f"{MOEX_URL}/securities/{ticker}.json"
     params = {"iss.only": "securities"}
@@ -93,7 +98,13 @@ def get_stock_lotsize(ticker: str) -> None | int:
 
     if info:
         d = dict(zip(columns, info[0]))
-        return d["LOTSIZE"]
+        lotsize = d.get("LOTSIZE")
+
+        if lotsize is not None:
+            redis_client.setex(cache_key, 600, lotsize)
+
+        return lotsize
+
     return None
 
 

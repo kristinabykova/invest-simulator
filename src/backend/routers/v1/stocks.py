@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, status
 from services.moex import (
-    get_stock_lotsize,
+    get_cache_stock_lotsize,
     get_cache_stock_candle,
 )
 from services.stocks import list_of_stocks, is_supported_ticker
@@ -21,7 +21,8 @@ def get_lotsize(ticker: str) -> LotSize:
             status_code=status.HTTP_404_NOT_FOUND,
             detail={"code": "TICKER_NOT_FOUND", "msg": f"Unknown ticker: {ticker}"},
         )
-    lotsize = get_stock_lotsize(ticker)
+
+    lotsize = get_cache_stock_lotsize(ticker)
 
     return {"ticker": ticker, "lotsize": lotsize}
 
