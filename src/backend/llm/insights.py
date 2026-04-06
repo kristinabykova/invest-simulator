@@ -113,8 +113,6 @@ async def generate_insights(metrics: MetricsIn) -> InsightsResponse:
         if start != -1 and end != -1 and end > start:
             content = content[start : end + 1]
 
-    print(content)
-
     data = json.loads(content)
 
     return InsightsResponse.model_validate(data)
