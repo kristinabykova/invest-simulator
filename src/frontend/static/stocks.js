@@ -49,6 +49,8 @@ export async function loadChart(stock) {
   clearSelection();
   loadLotSize(stock.ticker);
 
+  await refreshCurrentPrices(stock.ticker);
+
   const data = await apiGetJson(`/stocks/${encodeURIComponent(stock.ticker)}/history?days=${state.currentDays}`);
 
   const labels = data.map(d => d.date);
@@ -110,3 +112,30 @@ export async function loadChart(stock) {
 
   attachChartClickHandler();
 }
+
+export async function refreshCurrentPrices(ticker) {
+  const buyPriceEl = document.getElementById("buyPrice");
+  const sellPriceEl = document.getElementById("sellPrice");
+
+  if (!buyPriceEl || !sellPriceEl) return;
+
+  if (!ticker) {
+    buyPriceEl.textContent = "Покупка: — ₽";
+    sellPriceEl.textContent = "Продажа: — ₽";
+    return;
+  }
+
+  try {
+    const data = await apiGetJson(`/stocks/${ticker}/current`);
+
+    const offer = Number(data.offer);
+    const bid = Number(data.bid);
+
+    buyPriceEl.textContent = `Покупка: ${Number.isFinite(offer) ? offer.toFixed(2) : "—"} ₽`;
+    sellPriceEl.textContent = `Продажа: ${Number.isFinite(bid) ? bid.toFixed(2) : "—"} ₽`;
+  } catch (e) {
+    buyPriceEl.textContent = "Покупка: — ₽";
+    sellPriceEl.textContent = "Продажа: — ₽";
+  }
+}
+

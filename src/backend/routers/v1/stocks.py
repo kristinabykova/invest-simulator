@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException, status
 from services.moex import (
     get_cache_stock_lotsize,
     get_cache_stock_candle,
+    get_current_stock,
 )
 from services.stocks import list_of_stocks, is_supported_ticker
 from schemas.whatif import Candle, LotSize
@@ -36,3 +37,15 @@ def stock_history(ticker: str, days: int = 3) -> list[Candle]:
         )
     result = get_cache_stock_candle(ticker, days)
     return result
+
+
+@router.get("/{ticker}/current")
+async def get_current_stock_info(ticker: str):
+    try:
+        data = await get_current_stock(ticker)
+        return data
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Не удалось получить цену: {e}",
+        )

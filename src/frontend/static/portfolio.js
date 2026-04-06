@@ -12,6 +12,8 @@ import {
 } from "./dom.js";
 import { showToast } from "./utils.js";
 
+let portfolioTickerOrder = [];
+
 function formatPortfolioValue(value) {
   const num = Number(value);
   if (!Number.isFinite(num)) return "—";
@@ -23,6 +25,7 @@ function formatPortfolioValue(value) {
 
 function setGuestUI() {
   state.isAuthenticated = false;
+  portfolioTickerOrder = [];
 
   if (portfolioTickerSelect) {
     portfolioTickerSelect.innerHTML = `<option value="">—</option>`;
@@ -56,17 +59,42 @@ function setAuthUI(data) {
 
   if (portfolioTickerSelect) {
     const positions = Array.isArray(data.positions) ? data.positions : [];
+    const selectedTicker = portfolioTickerSelect.value;
+
+    const qtyMap = new Map(
+      positions.map((p) => [p.ticker, p.qty])
+    );
+
+    if (portfolioTickerOrder.length === 0) {
+      portfolioTickerOrder = positions.map((p) => p.ticker);
+    } else {
+      for (const p of positions) {
+        if (!portfolioTickerOrder.includes(p.ticker)) {
+          portfolioTickerOrder.push(p.ticker);
+        }
+      }
+    }
+
     portfolioTickerSelect.innerHTML = "";
 
-    if (positions.length === 0) {
+    const visibleTickers = portfolioTickerOrder.filter((ticker) =>
+      qtyMap.has(ticker)
+    );
+
+    if (visibleTickers.length === 0) {
       portfolioTickerSelect.innerHTML = `<option value="">Нет акций</option>`;
     } else {
-      positions.forEach((p) => {
+      visibleTickers.forEach((ticker) => {
         const option = document.createElement("option");
-        option.value = p.ticker;
-        option.textContent = `${p.ticker} (${p.qty})`;
+        option.value = ticker;
+        option.textContent = `${ticker} (${qtyMap.get(ticker)})`;
         portfolioTickerSelect.appendChild(option);
       });
+
+      const hasSelectedTicker = visibleTickers.includes(selectedTicker);
+      portfolioTickerSelect.value = hasSelectedTicker
+        ? selectedTicker
+        : visibleTickers[0];
     }
 
     portfolioTickerSelect.disabled = false;
