@@ -24,9 +24,4 @@ async def analyze_ai(req: WhatIfRequest):
     except Exception as e:
         print("LLM ERROR:", e)
         result = None
-    # try:
-    #     result = await test()
-    #     result = result.model_dump()
-    # except Exception:
-    #     result = None
     return result
