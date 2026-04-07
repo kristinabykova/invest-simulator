@@ -170,7 +170,7 @@ canvas{
 
 .tradeRow .tradeValue{
   display: inline-block;
-  min-width: 60px;
+  min-width: 40px;
   height: 36px;
   line-height: 36px;
   padding: 0 10px;
@@ -598,4 +598,36 @@ canvas{
 
 .hidden{
   display:none !important;
+}
+
+.chartWrap {
+  position: relative;
+}
+
+.periodSelect {
+  position: absolute;
+  top: 12px;
+  left: 16px;
+  z-index: 3;
+}
+
+.current-prices {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+
+  display: flex;
+  gap: 40px;
+  align-items: center;
+
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#buyPrice,
+#sellPrice {
+  color: #222;
 }

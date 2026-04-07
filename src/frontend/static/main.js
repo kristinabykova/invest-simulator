@@ -19,7 +19,7 @@ import { registerUser, loginUser, logoutUser } from "./auth.js";
 import { openModal, closeModal } from "./utils.js";
 import { renderStocksList, loadChart } from "./stocks.js";
 import { setCalcEnabled, renderWhatIf, renderAI, renderExplanations } from "./whatif.js";
-import { refreshPortfolioUI, buySelectedStock, sellSelectedStock } from "./portfolio.js";
+import { refreshPortfolioUI, buySelectedStock, sellSelectedStock, bindPortfolioSelectSync } from "./portfolio.js";
 
 async function init() {
   try {
@@ -75,6 +75,7 @@ async function init() {
   }
 
   setCalcEnabled();
+  bindPortfolioSelectSync();
 
   if (registerOpenBtn) {
     registerOpenBtn.addEventListener("click", () => openModal(registerModal));

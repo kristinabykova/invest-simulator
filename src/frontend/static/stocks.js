@@ -1,5 +1,5 @@
 import { state } from "./state.js";
-import { stocksBox, canvas } from "./dom.js";
+import { stocksBox, canvas, portfolioTickerSelect } from "./dom.js";
 import { apiGetJson } from "./api.js";
 import { clearSelection, attachChartClickHandler } from "./chart.js";
 import { formatXAxisLabel } from "./utils.js";
@@ -44,10 +44,46 @@ export function renderStocksList(stocks) {
   });
 }
 
+export function selectStockByTicker(ticker) {
+  if (!ticker || !stocksBox) return;
+
+  const row = stocksBox.querySelector(`.stockItem[data-ticker="${ticker}"]`);
+  if (!row) return;
+
+  document.querySelectorAll(".stockItem").forEach(el => el.classList.remove("active"));
+  row.classList.add("active");
+
+  const nameEl = row.querySelector(".stockName");
+  const tickerEl = row.querySelector(".stockTicker");
+
+  const stock = {
+    name: nameEl?.innerText || ticker,
+    ticker: tickerEl?.innerText || ticker,
+  };
+
+  loadChart(stock);
+}
+
+function syncPortfolioSelect(ticker) {
+  if (!portfolioTickerSelect || !ticker) return;
+
+  const hasOption = Array.from(portfolioTickerSelect.options).some(
+    (option) => option.value === ticker
+  );
+
+  if (hasOption) {
+    portfolioTickerSelect.value = ticker;
+  }
+}
+
 export async function loadChart(stock) {
   state.currentStock = stock;
   clearSelection();
   loadLotSize(stock.ticker);
+
+  await refreshCurrentPrices(stock.ticker);
+
+  syncPortfolioSelect(stock.ticker);
 
   const data = await apiGetJson(`/stocks/${encodeURIComponent(stock.ticker)}/history?days=${state.currentDays}`);
 
@@ -110,3 +146,30 @@ export async function loadChart(stock) {
 
   attachChartClickHandler();
 }
+
+export async function refreshCurrentPrices(ticker) {
+  const buyPriceEl = document.getElementById("buyPrice");
+  const sellPriceEl = document.getElementById("sellPrice");
+
+  if (!buyPriceEl || !sellPriceEl) return;
+
+  if (!ticker) {
+    buyPriceEl.textContent = "Покупка: — ₽";
+    sellPriceEl.textContent = "Продажа: — ₽";
+    return;
+  }
+
+  try {
+    const data = await apiGetJson(`/stocks/${ticker}/current`);
+
+    const offer = Number(data.offer);
+    const bid = Number(data.bid);
+
+    buyPriceEl.textContent = `Покупка: ${Number.isFinite(offer) ? offer.toFixed(2) : "—"} ₽`;
+    sellPriceEl.textContent = `Продажа: ${Number.isFinite(bid) ? bid.toFixed(2) : "—"} ₽`;
+  } catch (e) {
+    buyPriceEl.textContent = "Покупка: — ₽";
+    sellPriceEl.textContent = "Продажа: — ₽";
+  }
+}
+
