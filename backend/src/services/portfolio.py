@@ -2,21 +2,21 @@ from decimal import Decimal
 
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from schemas.stock_operations import (
+from src.schemas.stock_operations import (
     BuyStock,
     PositionSchema,
     ResultOperation,
     SellAll,
     SellStock,
 )
-from crud.portfolio import (
+from src.crud.portfolio import (
     get_portfolio_by_id,
     get_position,
     update_delete_position,
     upsert_position,
 )
-from models.user import User
-from services.moex import get_current_stock
+from src.models.user import User
+from src.services.moex import get_current_stock
 
 
 async def buy_stock(

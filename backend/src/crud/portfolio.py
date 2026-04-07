@@ -3,8 +3,8 @@ from uuid import UUID
 from sqlalchemy import and_, delete, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from schemas.stock_operations import PositionSchema
-from models.portfolio import Portfolio, Position
+from src.schemas.stock_operations import PositionSchema
+from src.models.portfolio import Portfolio, Position
 
 
 async def create_portfolio(id: UUID, session: AsyncSession) -> Portfolio:

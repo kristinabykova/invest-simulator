@@ -2,7 +2,7 @@ from typing import Optional
 import uuid
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from db.base import Base, pk, created_time, updated_time
+from src.db.base import Base, pk, created_time, updated_time
 
 from decimal import Decimal
 from sqlalchemy import Numeric

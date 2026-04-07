@@ -1,11 +1,11 @@
 from fastapi import APIRouter, HTTPException, status
-from services.moex import (
+from src.services.moex import (
     get_cache_stock_lotsize,
     get_cache_stock_candle,
     get_current_stock,
 )
-from services.stocks import list_of_stocks, is_supported_ticker
-from schemas.whatif import Candle, LotSize
+from src.services.stocks import list_of_stocks, is_supported_ticker
+from src.schemas.whatif import Candle, LotSize
 
 router = APIRouter(prefix="/stocks", tags=["Stocks"])
 

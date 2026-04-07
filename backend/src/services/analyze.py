@@ -1,4 +1,4 @@
-from services.moex import get_stock_candles, get_cache_stock_lotsize
+from src.services.moex import get_stock_candles, get_cache_stock_lotsize
 import math
 import statistics
 

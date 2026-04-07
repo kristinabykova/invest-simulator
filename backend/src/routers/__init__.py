@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from routers.v1.stocks import router as stocks_router
-from routers.v1.analyze import router as analyze_router
-from routers.v1.auth import router as auth_router
-from routers.v1.portfolio import router as portfolio_router
+from src.routers.v1.stocks import router as stocks_router
+from src.routers.v1.analyze import router as analyze_router
+from src.routers.v1.auth import router as auth_router
+from src.routers.v1.portfolio import router as portfolio_router
 
 main_router = APIRouter()
 

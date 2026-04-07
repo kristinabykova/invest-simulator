@@ -1,18 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from auth.auth_service import get_current_user
-from crud.portfolio import get_portfolio_by_id, get_positions_by_portfolio_id
-from services.portfolio import buy_stock, sell_stock
-from schemas.stock_operations import (
+from src.auth.auth_service import get_current_user
+from src.crud.portfolio import get_portfolio_by_id, get_positions_by_portfolio_id
+from src.services.portfolio import buy_stock, sell_stock
+from src.schemas.stock_operations import (
     BuyStock,
     ListOfPositions,
     ResultOperation,
     SellAll,
     SellStock,
 )
-from db.dependencies import get_session
-from models.user import User
+from src.db.dependencies import get_session
+from src.models.user import User
 
 router = APIRouter(tags=["Portfolio"], prefix="/portfolio")
 

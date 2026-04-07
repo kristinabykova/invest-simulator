@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response
-from auth.utils import encode_jwt
-from auth.auth_service import get_current_user, validate_auth_user
-from crud.portfolio import create_portfolio
-from db.dependencies import get_session
-from models.user import User
-from crud.user import create_user, get_user_by_email
-from schemas.user import Logout, UserLogin, UserRead, Token
+from src.auth.utils import encode_jwt
+from src.auth.auth_service import get_current_user, validate_auth_user
+from src.crud.portfolio import create_portfolio
+from src.db.dependencies import get_session
+from src.models.user import User
+from src.crud.user import create_user, get_user_by_email
+from src.schemas.user import Logout, UserLogin, UserRead, Token
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/auth", tags=["Auth"])

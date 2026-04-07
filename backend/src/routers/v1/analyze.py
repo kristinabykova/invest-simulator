@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from schemas.whatif import WhatIfRequest
-from services.explanation import all_explanations
-from services.analyze import analyze_whatif
-from llm.insights import build_metrics_for_llm, generate_insights, test
+from src.schemas.whatif import WhatIfRequest
+from src.services.explanation import all_explanations
+from src.services.analyze import analyze_whatif
+from src.llm.insights import build_metrics_for_llm, generate_insights, test
 
 router = APIRouter(prefix="/analyze", tags=["Analyze"])
 
