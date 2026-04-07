@@ -40,6 +40,9 @@ async def login_user(
         key="access_token",
         value=token,
         httponly=True,
+        secure=True,
+        samesite="Lax",
+        max_age=60 * 30,
     )
 
     return Token(access_token=token, token_type="Bearer")
