@@ -3,9 +3,9 @@ import json
 from datetime import date, timedelta
 import httpx
 
-from schemas.stock_operations import CurrentStocks
-from schemas.whatif import Candle
-from services.cache_services import redis_client
+from src.schemas.stock_operations import CurrentStocks
+from src.schemas.whatif import Candle
+from src.services.cache_services import redis_client
 
 MOEX_URL = "https://iss.moex.com/iss/engines/stock/markets/shares"
 

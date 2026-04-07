@@ -2,8 +2,8 @@ import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from db.init_db import init_db
-from routers import main_router
+from src.db.init_db import init_db
+from src.routers import main_router
 
 app = FastAPI(title="Investment Simulator API")
 app.include_router(main_router, prefix="/api")

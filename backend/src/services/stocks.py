@@ -18,8 +18,10 @@ STOCKS = [
 
 _SUPPORTED_TICKERS = frozenset(s["ticker"] for s in STOCKS)
 
+
 def is_supported_ticker(ticker: str):
     return ticker.upper().strip() in _SUPPORTED_TICKERS
+
 
 def list_of_stocks():
     return STOCKS

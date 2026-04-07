@@ -4,9 +4,9 @@ from uuid import UUID
 from pydantic import EmailStr
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from schemas.user import UserRead, UserCreate
-from models.user import User
-from auth.utils import hash_password
+from src.schemas.user import UserCreate
+from src.models.user import User
+from src.auth.utils import hash_password
 
 
 async def get_user_by_email(

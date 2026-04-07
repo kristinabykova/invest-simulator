@@ -1,7 +1,7 @@
-from db.session import engine
-from db.base import Base
-from models.user import User
-from models.portfolio import Portfolio
+from .session import engine
+from .base import Base
+from src.models.user import User
+from src.models.portfolio import Portfolio
 
 
 async def init_db():

@@ -4,7 +4,7 @@ from typing import Any
 import jwt
 import bcrypt
 
-from core.config import settings
+from src.core.config import settings
 
 
 def encode_jwt(

@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from db.base import Base, str_255, pk, created_time
+from src.db.base import Base, str_255, pk, created_time
 
 
 class User(Base):
