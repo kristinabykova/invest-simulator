@@ -29,4 +29,4 @@ async def analyze_ai(req: WhatIfRequest):
     #     result = result.model_dump()
     # except Exception:
     #     result = None
-    # return result
+    return result
