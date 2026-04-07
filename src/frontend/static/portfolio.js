@@ -11,6 +11,7 @@ import {
   logoutBtn,
 } from "./dom.js";
 import { showToast } from "./utils.js";
+import { selectStockByTicker } from "./stocks.js";
 
 let portfolioTickerOrder = [];
 
@@ -195,4 +196,15 @@ export async function sellSelectedStock() {
     const detail = e.data?.detail;
     showToast(typeof detail === "string" ? detail : "Ошибка продажи", "error");
   }
+}
+
+export function bindPortfolioSelectSync() {
+  if (!portfolioTickerSelect) return;
+
+  portfolioTickerSelect.addEventListener("change", () => {
+    const ticker = portfolioTickerSelect.value;
+    if (!ticker) return;
+
+    selectStockByTicker(ticker);
+  });
 }
