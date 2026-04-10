@@ -34,7 +34,7 @@ async def login_user(
 ) -> Token:
     user = await validate_auth_user(data, session)
 
-    jwt_payload = {"sub": str(user.id)}
+    jwt_payload = {"sub": str(user.id), "role": user.role}
     token = encode_jwt(jwt_payload)
     response.set_cookie(
         key="access_token",

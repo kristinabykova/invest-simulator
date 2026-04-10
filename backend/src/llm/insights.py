@@ -1,6 +1,6 @@
-from src.schemas.whatif import WhatIfRequest
+from schemas.whatif import WhatIfRequest
 import json
-from src.schemas.insights import MetricsIn, InsightsResponse
+from schemas.insights import MetricsIn, InsightsResponse
 from openai import AsyncOpenAI
 import os
 
