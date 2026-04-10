@@ -1,14 +1,14 @@
-services:
+services: # каждый сервис один контейнер
   db:
-    image: postgres:16
+    image: postgres:16 # образ с докер хаб
     container_name: invest_db
     restart: always
-    environment:
+    environment: # задаем переменные окружения внутри контейнера
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASS}
       POSTGRES_DB: ${DB_NAME}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data # нужно чтобы наши данные сохранялись между перезапусками контейнера, иначе они просто потеряются
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
       interval: 10s
@@ -27,14 +27,14 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ./backend # путь к директории сборки, где лежит наш докер файл
     container_name: invest_backend
     restart: always
     env_file:
       - .env
-    depends_on:
-      db:
-        condition: service_healthy
+    depends_on: # зависимости между нашими сервисами
+      db: # гарантируем, что сервис дб стартует раньше чем бэк, но не ждет полной готовности базы
+        condition: service_healthy # setvice-healthy ожидает положительного статуса проверки healtcheck в сервисе db
     expose:
       - "8000"
 
@@ -45,7 +45,7 @@ services:
     depends_on:
       - backend
     ports:
-      - "80:80"
+      - "80:80" # порт на хосте (моя машина) : порт в контейнере
       - "443:443"
     volumes:
       - ./frontend:/usr/share/nginx/html:ro
