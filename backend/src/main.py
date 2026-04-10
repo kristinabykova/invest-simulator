@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 import os
 import uvicorn
 from fastapi import FastAPI
@@ -5,7 +6,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.db.init_db import init_db
 from src.routers import main_router
 
-app = FastAPI(title="Investment Simulator API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await init_db()
+    yield
+
+
+app = FastAPI(title="Investment Simulator API", lifespan=lifespan)
 app.include_router(main_router, prefix="/api")
 
 FRONTEND_ORIGINS = os.getenv("FRONTEND_ORIGINS", "")
@@ -24,11 +32,6 @@ if origins:
 @app.get("/")
 def root():
     return {"status": "ok"}
-
-
-@app.on_event("startup")
-async def startup():
-    await init_db()
 
 
 if __name__ == "__main__":
