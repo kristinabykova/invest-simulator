@@ -35,6 +35,8 @@ services: # каждый сервис один контейнер
     depends_on: # зависимости между нашими сервисами
       db: # гарантируем, что сервис дб стартует раньше чем бэк, но не ждет полной готовности базы
         condition: service_healthy # setvice-healthy ожидает положительного статуса проверки healtcheck в сервисе db
+      redis:
+        condition: service_started
     expose:
       - "8000"
 
