@@ -39,6 +39,8 @@ services: # каждый сервис один контейнер
         condition: service_started
     expose:
       - "8000"
+    ports:                          
+      - "8000:8000"  
 
   nginx:
     image: nginx:1.27-alpine
