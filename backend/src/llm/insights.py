@@ -5,7 +5,7 @@ from openai import AsyncOpenAI
 import os
 
 NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
-NVIDIA_MODEL = "meta/llama3-70b-instruct"
+NVIDIA_MODEL = "meta/llama-3.3-70b-instruct"
 
 SYSTEM_PROMPT = """
 Ты помощник для обучающего симулятора инвестиций.
