@@ -26,5 +26,6 @@ jobs:
             set -e
             cd ~/invest-simulator
             git pull origin main
+            docker compose down
             docker compose up -d --build
           EOF
