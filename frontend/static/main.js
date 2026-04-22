@@ -21,7 +21,63 @@ import { renderStocksList, loadChart } from "./stocks.js";
 import { setCalcEnabled, renderWhatIf, renderAI, renderExplanations } from "./whatif.js";
 import { refreshPortfolioUI, buySelectedStock, sellSelectedStock, bindPortfolioSelectSync } from "./portfolio.js";
 
+
+async function loadHTML(elementId, filePath) {
+  try {
+    const response = await fetch(filePath);
+    if (response.ok) {
+      const html = await response.text();
+      document.getElementById(elementId).innerHTML = html;
+    } else {
+      console.error('Ошибка загрузки:', filePath);
+    }
+  } catch (error) {
+    console.error('Ошибка:', error);
+  }
+}
+
+function initTabs() {
+  const tabs = document.querySelectorAll('.tab');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  function switchTab(tabId) {
+    tabContents.forEach(content => {
+      content.classList.remove('active');
+    });
+    
+    tabs.forEach(tab => {
+      tab.classList.remove('active');
+    });
+    
+    const activeContent = document.getElementById(`tab-${tabId}`);
+    if (activeContent) {
+      activeContent.classList.add('active');
+    }
+
+    const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+    if (activeTab) {
+      activeTab.classList.add('active');
+    }
+  }
+  
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const tabId = tab.getAttribute('data-tab');
+      if (tabId) {
+        switchTab(tabId);
+      }
+    });
+  });
+
+  switchTab('home'); // главная страница по умолчанию
+}
+
+
 async function init() {
+
+  initTabs();
+  loadHTML('terms-content', 'terms.html');
+
   try {
     const stocks = await apiGetJson("/stocks/");
     renderStocksList(stocks);

@@ -48,11 +48,16 @@
     </div>
 
     <div class="tabs">
-      <div class="tab">термины</div>
-      <div class="tab">главная</div>
-      <div class="tab">этапы обучения</div>
+      <div class="tab" data-tab="terms">термины</div>
+      <div class="tab" data-tab="home">главная</div>
+      <div class="tab" data-tab="learning">этапы обучения</div>
+    </div>
+  
+    <div id="tab-terms" class="tab-content">
+    <div id="terms-content"></div>
     </div>
 
+    <div id="tab-home" class="tab-content active">
     <div class="main">
       <section class="panel left" aria-label="Список инструментов">
         <div class="stocklist" id="stockList">
@@ -148,6 +153,7 @@
         <div class="placeholder" id="aiTermText" aria-hidden="true"></div>
       </div>
     </div>
+  </div>
   </div>
 
   <script type="module" src="./static/main.js"></script>
