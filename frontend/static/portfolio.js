@@ -65,6 +65,10 @@ function setAuthUI(data) {
     const qtyMap = new Map(
       positions.map((p) => [p.ticker, p.qty])
     );
+    
+    const priceMap = new Map(
+      positions.map((p) => [p.ticker, p.price])
+    );
 
     if (portfolioTickerOrder.length === 0) {
       portfolioTickerOrder = positions.map((p) => p.ticker);
@@ -88,7 +92,17 @@ function setAuthUI(data) {
       visibleTickers.forEach((ticker) => {
         const option = document.createElement("option");
         option.value = ticker;
-        option.textContent = `${ticker} (${qtyMap.get(ticker)})`;
+        const qty = qtyMap.get(ticker);
+        const price = priceMap.get(ticker);
+        
+        const priceFormatted = price != null 
+          ? Number(price).toLocaleString("ru-RU", {
+              minimumFractionDigits: 2,
+              maximumFractionDigits: 2,
+            })
+          : "—";
+        
+        option.textContent = `${ticker} (${qty}) ${priceFormatted} ₽`;
         portfolioTickerSelect.appendChild(option);
       });
 

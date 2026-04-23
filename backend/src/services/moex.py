@@ -1,4 +1,3 @@
-import requests
 import json
 from datetime import date, timedelta
 import httpx
@@ -9,13 +8,13 @@ from src.services.cache_services import redis_client
 
 MOEX_URL = "https://iss.moex.com/iss/engines/stock/markets/shares"
 
+_http_client = httpx.AsyncClient(timeout=10.0)
+
 
 async def get_current_stock(ticker: str) -> CurrentStocks:
     url = f"{MOEX_URL}/securities/{ticker}.json"
 
-    async with httpx.AsyncClient() as client:
-        response = await client.get(url)
-
+    response = await _http_client.get(url)
     response.raise_for_status()
     data = response.json()
 
@@ -50,13 +49,15 @@ async def get_current_stock(ticker: str) -> CurrentStocks:
     }
 
 
-def get_stock_candles(
+async def get_stock_candles(
     ticker: str, date_from: str, date_to: str, interval: int = 10
 ) -> list[Candle]:
+
     url = f"{MOEX_URL}/securities/{ticker}/candles.json"
     params = {"interval": interval, "from": date_from, "till": date_to}
 
-    response = requests.get(url, params=params, timeout=5)
+    response = await _http_client.get(url, params=params)
+
     response.raise_for_status()
     data = response.json()
 
@@ -78,17 +79,18 @@ def get_stock_candles(
     return result
 
 
-def get_cache_stock_lotsize(ticker: str) -> int | None:
+async def get_cache_stock_lotsize(ticker: str) -> int | None:
     cache_key = f"stock_lotsize:{ticker}"
 
-    cached_data = redis_client.get(cache_key)
+    cached_data = await redis_client.get(cache_key)
     if cached_data:
         return int(cached_data)
 
     url = f"{MOEX_URL}/securities/{ticker}.json"
     params = {"iss.only": "securities"}
 
-    response = requests.get(url, params=params)
+    response = await _http_client.get(url, params=params)
+    print(response)
     response.raise_for_status()
     data = response.json()
 
@@ -101,25 +103,29 @@ def get_cache_stock_lotsize(ticker: str) -> int | None:
         lotsize = d.get("LOTSIZE")
 
         if lotsize is not None:
-            redis_client.setex(cache_key, 600, lotsize)
+            await redis_client.setex(cache_key, 600, lotsize)
 
         return lotsize
 
     return None
 
 
-def get_cache_stock_candle(ticker: str, days: int):
+async def get_cache_stock_candle(ticker: str, days: int):
     cache_key = f"stock_history:{ticker}:{days}"
-    cached_data = redis_client.get(cache_key)
+    cached_data = await redis_client.get(cache_key)
     if cached_data:
         return json.loads(cached_data)
 
     today = date.today()
     date_from = today - timedelta(days=days)
-    result = get_stock_candles(
+    result = await get_stock_candles(
         ticker=ticker, date_from=date_from.isoformat(), date_to=today.isoformat()
     )
 
-    redis_client.setex(cache_key, 60, json.dumps(result))
+    await redis_client.setex(cache_key, 60, json.dumps(result))
 
     return result
+
+
+async def close_http_client():
+    await _http_client.aclose()

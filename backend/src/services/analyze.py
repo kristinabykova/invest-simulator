@@ -86,15 +86,15 @@ def risk_assessment(volatility: float | None, roi: float | None) -> str | None:
     return "умеренный риск"
 
 
-def analyze_whatif(
+async def analyze_whatif(
     ticker: str, from_date: str, to_date: str, interval: int, lots_count: int
 ) -> dict:
 
-    candles = get_stock_candles(
+    candles = await get_stock_candles(
         ticker=ticker, date_from=from_date, date_to=to_date, interval=interval
     )
 
-    lot_size = get_cache_stock_lotsize(ticker)
+    lot_size = await get_cache_stock_lotsize(ticker)
 
     closes = [c["close"] for c in candles]
 

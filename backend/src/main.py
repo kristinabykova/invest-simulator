@@ -3,6 +3,8 @@ import os
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from src.services.cache_services import close_redis
+from src.services.moex import close_http_client
 from src.db.init_db import init_db
 from src.routers import main_router
 
@@ -11,6 +13,8 @@ from src.routers import main_router
 async def lifespan(app: FastAPI):
     await init_db()
     yield
+    await close_redis()
+    await close_http_client()
 
 
 app = FastAPI(title="Investment Simulator API", lifespan=lifespan)

@@ -19,7 +19,7 @@ async def register_user(
     if exist:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="User with email already exists",
+            detail="Пользователь с таким email уже существует",
         )
     user = await create_user(session, data)
     await create_portfolio(user.id, session)
