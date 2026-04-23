@@ -631,3 +631,129 @@ canvas{
 #sellPrice {
   color: #222;
 }
+
+.help-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 8px;
+  background: #e86963;
+  color: white;
+  font-size: 13px;
+  border-radius: 50%;
+  cursor: help;
+  position: relative;
+  top: -4px;
+}
+
+.help-icon:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 100%;
+  transform: translateX(-50%);
+  background: #1a1a2e;
+  color: white;
+  font-size: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  width: 260px;
+  white-space: normal;
+  margin-bottom: 8px;
+  z-index: 1000;
+}
+
+/* Вкладки — без изменений формы */
+.tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid rgba(255,255,255,0.35);
+}
+
+.tab {
+  background: #e8a09c;
+  color: #fff;
+  text-align: center;
+  font-weight: 800;
+  padding: 12px 8px;
+  border-right: 2px solid rgba(255,255,255,0.85);
+  letter-spacing: 0.3px;
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tab:last-child {
+  border-right: none;
+}
+
+.tab.active {
+  background: #e86963;
+}
+
+.tab:not(.active):hover {
+  background: #d98a86;
+}
+
+.tab:active {
+  transform: none;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.terms-container {
+  padding: 20px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.category-title {
+  color: #e86963;
+  font-size: 22px;
+  font-weight: 800;
+  margin: 24px 0 16px 0;
+  padding-bottom: 6px;
+  border-bottom: 2px solid #e86963;
+}
+
+.category-title:first-of-type {
+  margin-top: 0;
+}
+
+.term-card {
+  margin-bottom: 16px;
+}
+
+.term-name {
+  font-weight: 800;
+  font-size: 16px;
+  color: #222;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.term-desc {
+  font-size: 16px;
+  color: #555;
+  line-height: 1.45;
+  margin: 0;
+  padding-left: 8px;
+  border-left: 3px solid #e86963;
+}
+.trend-image {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  height: auto;
+  margin: 10px 0;
+  border-radius: 8px;
+  background: #f5f5f5;
+  padding: 8px;
+}
