@@ -90,7 +90,6 @@ async def get_cache_stock_lotsize(ticker: str) -> int | None:
     params = {"iss.only": "securities"}
 
     response = await _http_client.get(url, params=params)
-    print(response)
     response.raise_for_status()
     data = response.json()
 

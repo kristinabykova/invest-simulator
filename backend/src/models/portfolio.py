@@ -20,6 +20,7 @@ class Portfolio(Base):
     updated_at: Mapped[updated_time]
 
     user = relationship("User", back_populates="portfolio")
+    position = relationship("Position", back_populates="portfolio")
 
 
 class Position(Base):
@@ -32,3 +33,5 @@ class Position(Base):
     quantity: Mapped[Optional[int]]
     price: Mapped[Optional[Decimal]] = mapped_column(Numeric(15, 2))
     updated_at: Mapped[updated_time]
+
+    portfolio = relationship("Portfolio", back_populates="position")
