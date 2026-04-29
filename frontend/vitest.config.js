@@ -7,7 +7,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "html"],
-      include: ["js/**/*.js"],
+      include: ["static/**/*.js"],
       exclude: [
         "tests/**"
       ],
