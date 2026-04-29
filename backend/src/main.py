@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-import os
+from core.config import settings
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -20,7 +20,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Investment Simulator API", lifespan=lifespan)
 app.include_router(main_router, prefix="/api")
 
-FRONTEND_ORIGINS = os.getenv("FRONTEND_ORIGINS", "")
+FRONTEND_ORIGINS = settings.FRONTEND_ORIGINS
 origins = [origin.strip() for origin in FRONTEND_ORIGINS.split(",") if origin.strip()]
 
 if origins:

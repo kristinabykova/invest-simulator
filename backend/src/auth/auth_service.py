@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException, status, Cookie
 from jwt import ExpiredSignatureError, InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from .utils import validate_password, decode_jwt, validate_password
+from .utils import validate_password, decode_jwt
 from src.models.user import User
 from src.db.dependencies import get_session
 from src.crud.user import get_user_by_email, get_user_by_id
