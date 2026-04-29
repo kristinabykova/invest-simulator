@@ -1,4 +1,6 @@
 from src.schemas.whatif import WhatIfRequest
+from core.config import settings
+
 import json
 from src.schemas.insights import MetricsIn, InsightsResponse
 from openai import AsyncOpenAI
@@ -30,7 +32,7 @@ SYSTEM_PROMPT = """
 
 
 def get_openai_client():
-    api_key = os.getenv("NVIDIA_API_KEY")
+    api_key = settings.NVIDIA_API_KEY
     if not api_key:
         return None
     return AsyncOpenAI(base_url=NVIDIA_BASE_URL, api_key=api_key)
