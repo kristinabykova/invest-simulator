@@ -8,9 +8,14 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "html"],
       include: ["static/**/*.js"],
-      exclude: [
-        "tests/**"
-      ],
+       exclude: [
+        "tests/**",
+        "node_modules/**",
+        "static/main.js",
+        "static/config.js",
+        "static/dom.js",
+        "static/state.js"
+       ],
       // thresholds: {
       //   statements: 80,
       //   branches: 70,
