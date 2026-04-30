@@ -757,3 +757,58 @@ canvas{
   background: #f5f5f5;
   padding: 8px;
 }
+
+.helpModalBox {
+  max-width: 560px;
+}
+
+.helpText {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.helpList {
+  margin: 12px 0 0 20px;
+  padding: 0;
+}
+
+.helpList li {
+  margin-bottom: 8px;
+}
+
+.learningPage {
+  min-height: 520px;
+  padding: 40px 60px;
+  background: #ffffff;
+}
+
+.learningCard {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px;
+  border: 1px solid #f0d0cc;
+  border-radius: 18px;
+  background: #fffafa;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.learningTitle {
+  margin: 0 0 18px;
+  color: #d66b63;
+  font-size: 32px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.learningText {
+  margin: 0 0 14px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #333;
+}
+
+
+
+
+

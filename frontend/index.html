@@ -11,6 +11,7 @@
 
 <div class="toast" id="toast"></div>
 
+
 <div class="modalOverlay hidden" id="registerModal">
   <div class="modalBox">
     <div class="modalTitle">Регистрация</div>
@@ -35,12 +36,42 @@
   </div>
 </div>
 
+<div class="modalOverlay hidden" id="helpModal">
+  <div class="modalBox helpModalBox">
+    <div class="modalTitle">Как пользоваться симулятором</div>
+
+    <div class="helpText">
+      <p>
+        Инвест-симулятор помогает изучать поведение акций на графике,
+        анализировать выбранные периоды и выполнять виртуальные операции
+        покупки и продажи без риска потери реальных денег.
+      </p>
+
+      <ol class="helpList">
+        <li>Выберите акцию из списка слева.</li>
+        <li>Выберите период отображения графика: 1, 3 или 5 дней.</li>
+        <li>Нажмите на графике две точки: начало и конец периода для анализа.</li>
+        <li>Укажите количество лотов и нажмите кнопку «Рассчитать».</li>
+        <li>Изучите рассчитанные показатели: прибыль, доходность, волатильность, риск и тип тренда.</li>
+        <li>Прочитайте пояснение, подсказку и термины в нижней части экрана.</li>
+        <li>После входа в аккаунт можно купить или продать акцию в виртуальном портфеле.</li>
+      </ol>
+    </div>
+
+    <div class="modalActions">
+      <button class="modalBtn" id="helpCloseBtn" type="button">Понятно</button>
+    </div>
+  </div>
+</div>
+
+
 <body>
   <div class="page">
     <div class="topbar">
       <div class="topbarTitle">Инвест-симулятор</div>
 
       <div class="authButtons">
+        <button class="authBtn" id="helpOpenBtn" type="button">Как пользоваться?</button>
         <button class="authBtn" id="registerOpenBtn" type="button">Регистрация</button>
         <button class="authBtn" id="loginOpenBtn" type="button">Вход</button>
         <button class="authBtn hidden" id="logoutBtn" type="button">Выход</button>
@@ -56,6 +87,22 @@
     <div id="tab-terms" class="tab-content">
     <div id="terms-content"></div>
     </div>
+     
+
+    <div id="tab-learning" class="tab-content">
+  <div class="learningPage">
+    <div class="learningCard">
+      <h2 class="learningTitle">Этапы обучения</h2>
+
+      <p class="learningText">
+        Раздел находится в разработке. В следующей версии здесь будет доступен
+        расширенный режим обучения, аналогичный основной вкладке приложения,
+        но с дополнительными параметрами управления рисками.
+      </p>
+    </div>
+  </div>
+</div>
+    
 
     <div id="tab-home" class="tab-content active">
     <div class="main">
