@@ -759,7 +759,7 @@ canvas{
 }
 
 .helpModalBox {
-  max-width: 560px;
+  width: 760px;
 }
 
 .helpText {
@@ -808,7 +808,28 @@ canvas{
   color: #333;
 }
 
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.authButtons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.helpTopBtn {
+  font-size: 14px;
+  padding: 8px 14px;
+}
 
 
 
