@@ -1,10 +1,9 @@
 from src.schemas.whatif import WhatIfRequest
-from core.config import settings
+from src.core.config import settings
 
 import json
 from src.schemas.insights import MetricsIn, InsightsResponse
 from openai import AsyncOpenAI
-import os
 
 NVIDIA_BASE_URL = "https://integrate.api.nvidia.com/v1"
 NVIDIA_MODEL = "meta/llama-3.3-70b-instruct"
