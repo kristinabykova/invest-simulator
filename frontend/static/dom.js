@@ -1,5 +1,4 @@
 export const stocksBox = document.getElementById("stocks");
-export const canvas = document.getElementById("priceChart");
 export const periodSelect = document.getElementById("periodSelect");
 export const wfCalcBtn = document.getElementById("wfCalcBtn");
 
