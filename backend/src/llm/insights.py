@@ -100,7 +100,7 @@ async def generate_insights(metrics: MetricsIn) -> InsightsResponse:
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": build_user_prompt(metrics)},
         ],
-        temperature=0.4,
+        temperature=0.8,
         top_p=0.9,
         max_tokens=400,
         extra_body={"chat_template_kwargs": {"thinking": False}},

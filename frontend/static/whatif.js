@@ -9,25 +9,27 @@ export function setCalcEnabled() {
 
 export function renderExplanations(explanations) {
   if (!explanations) return;
-  
+
   const explanationEl = document.getElementById("aiExplanationText");
+  const tipEl = document.getElementById("aiTipText");
+  const termEl = document.getElementById("aiTermText");
+
   if (explanationEl) {
     explanationEl.textContent = explanations.explanation || "Нет объяснения";
     explanationEl.classList.remove("placeholder");
   }
-  
-  const tipEl = document.getElementById("aiTipText");
+
   if (tipEl) {
     tipEl.textContent = explanations.tip || "Нет подсказки";
     tipEl.classList.remove("placeholder");
   }
-  
-  const termEl = document.getElementById("aiTermText");
+
   if (termEl) {
-    termEl.textContent = explanations.term || "Нет терминов";
+    termEl.innerHTML = formatTerms(explanations.terms);
     termEl.classList.remove("placeholder");
   }
 }
+
 
 export function formatTerms(terms) {
   if (!terms || terms.length === 0) return "—";

@@ -219,6 +219,10 @@ canvas{
   background:linear-gradient(0deg, #fff, #fff);
 }
 
+#aiExplanationText {
+  white-space: pre-line;
+}
+
 /* Небольшая адаптивность */
 @media (max-width: 980px){
   .main{ grid-template-columns: 1fr; }

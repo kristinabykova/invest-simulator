@@ -118,12 +118,15 @@ def test_roi_returns_none_if_required_value_is_missing(first, last):
     "volatility, roi_value, expected",
     [
         (None, 10, None),
-        (1.0, None, None),
+        (1.0, None, "умеренный риск"),
         (2.0, 0, "высокий риск"),
         (2.0, -5, "высокий риск"),
         (0.3, 10, "низкий риск"),
         (1.0, 10, "умеренный риск"),
         (0.7, -2, "умеренный риск"),
+        (0.3, 11, "умеренный риск"),
+        (0.3, -11, "умеренный риск"),
+        (2.0, -11, "высокий риск"),
     ],
 )
 def test_risk_assessment(volatility, roi_value, expected):
