@@ -74,27 +74,38 @@ describe("whatif.js", () => {
   });
 
   it("renderExplanations fills explanation blocks", () => {
-    renderExplanations({
-      explanation: "Объяснение",
-      tip: "Совет",
-      term: "Термин",
-    });
+  document.body.innerHTML = `
+    <div id="aiExplanationText" class="placeholder"></div>
+    <div id="aiTipText" class="placeholder"></div>
+    <div id="aiTermText" class="placeholder"></div>
+  `;
 
-    expect(document.getElementById("aiExplanationText").textContent).toBe("Объяснение");
-    expect(document.getElementById("aiTipText").textContent).toBe("Совет");
-    expect(document.getElementById("aiTermText").textContent).toBe("Термин");
-
-    expect(document.getElementById("aiExplanationText").classList.contains("placeholder")).toBe(false);
-    expect(document.getElementById("aiTipText").classList.contains("placeholder")).toBe(false);
-    expect(document.getElementById("aiTermText").classList.contains("placeholder")).toBe(false);
+  renderExplanations({
+    explanation: "Объяснение",
+    tip: "Совет",
+    terms: [
+      {
+        term: "Термин",
+        definition: "Определение",
+      },
+    ],
   });
+
+  expect(document.getElementById("aiExplanationText").textContent).toBe("Объяснение");
+  expect(document.getElementById("aiTipText").textContent).toBe("Совет");
+  expect(document.getElementById("aiTermText").textContent).toBe("Термин — Определение");
+
+  expect(document.getElementById("aiExplanationText").classList.contains("placeholder")).toBe(false);
+  expect(document.getElementById("aiTipText").classList.contains("placeholder")).toBe(false);
+  expect(document.getElementById("aiTermText").classList.contains("placeholder")).toBe(false);
+});
 
   it("renderExplanations uses fallback text", () => {
     renderExplanations({});
 
     expect(document.getElementById("aiExplanationText").textContent).toBe("Нет объяснения");
     expect(document.getElementById("aiTipText").textContent).toBe("Нет подсказки");
-    expect(document.getElementById("aiTermText").textContent).toBe("Нет терминов");
+    expect(document.getElementById("aiTermText").textContent).toBe("—");
   });
 
   it("renderExplanations does nothing if explanations are missing", () => {
