@@ -123,13 +123,13 @@ def test_all_explanations_full_result():
 
     data = explanation.all_explanations(result)
 
-    assert "Что произошло с ценой:" in data["explanation"]
-    assert "Оценка входа:" in data["explanation"]
+    assert "Что произошло с ценой" in data["explanation"]
+    assert "Стоит ли покупать в конце периода" in data["explanation"]
     assert "Дополнительно:" in data["explanation"]
 
     assert data["tip"] == explanation.TIPS["высокий доход и высокий риск"]
 
-    term_names = [item["term"] for item in data["term"]]
+    term_names = [item["term"] for item in data["terms"]]
 
     assert "Восходящий тренд" in term_names
     assert "Волатильность" in term_names
@@ -147,13 +147,13 @@ def test_all_explanations_without_high_volatility():
 
     data = explanation.all_explanations(result)
 
-    assert "Что произошло с ценой:" in data["explanation"]
-    assert "Оценка входа:" in data["explanation"]
+    assert "Что произошло с ценой" in data["explanation"]
+    assert "Стоит ли покупать в конце периода" in data["explanation"]
     assert "Дополнительно:" not in data["explanation"]
 
     assert data["tip"] == explanation.TIPS["низкий доход и умеренный риск"]
 
-    term_names = [item["term"] for item in data["term"]]
+    term_names = [item["term"] for item in data["terms"]]
 
     assert "Боковой тренд" in term_names
     assert "Волатильность" not in term_names
@@ -171,13 +171,13 @@ def test_all_explanations_only_trend():
 
     data = explanation.all_explanations(result)
 
-    assert "Что произошло с ценой:" in data["explanation"]
-    assert "Оценка входа:" not in data["explanation"]
+    assert "Что произошло с ценой" in data["explanation"]
+    assert "Стоит ли покупать в конце периода" not in data["explanation"]
     assert "Дополнительно:" not in data["explanation"]
 
     assert data["tip"] == explanation.TIPS["нисходящий тренд"]
 
-    term_names = [item["term"] for item in data["term"]]
+    term_names = [item["term"] for item in data["terms"]]
 
     assert term_names == ["Нисходящий тренд"]
 
@@ -195,7 +195,7 @@ def test_all_explanations_only_high_volatility():
     assert "Дополнительно:" in data["explanation"]
     assert data["tip"] == explanation.TIPS["высокая волатильность"]
 
-    term_names = [item["term"] for item in data["term"]]
+    term_names = [item["term"] for item in data["terms"]]
 
     assert term_names == ["Волатильность"]
 
@@ -207,7 +207,7 @@ def test_all_explanations_fallback_when_no_data():
 
     assert data["explanation"] == "Недостаточно данных для объяснения результата."
     assert "Недостаточно данных" in data["tip"]
-    assert data["term"] == []
+    assert data["terms"] == []
 
 
 def test_all_explanations_unknown_values():
@@ -223,5 +223,5 @@ def test_all_explanations_unknown_values():
     assert data["explanation"] == "Недостаточно данных для объяснения результата."
     assert "Недостаточно данных" in data["tip"]
 
-    term_names = [item["term"] for item in data["term"]]
+    term_names = [item["term"] for item in data["terms"]]
     assert term_names == ["Риск"]
