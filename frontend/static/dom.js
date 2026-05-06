@@ -2,6 +2,8 @@ export const stocksBox = document.getElementById("stocks");
 export const periodSelect = document.getElementById("periodSelect");
 export const wfCalcBtn = document.getElementById("wfCalcBtn");
 
+export const canvas = document.getElementById("priceChart");
+
 export const registerOpenBtn = document.getElementById("registerOpenBtn");
 export const loginOpenBtn = document.getElementById("loginOpenBtn");
 export const logoutBtn = document.getElementById("logoutBtn");

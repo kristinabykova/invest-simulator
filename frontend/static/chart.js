@@ -1,5 +1,6 @@
 import { state } from "./state.js";
 import { setCalcEnabled } from "./whatif.js";
+import { canvas } from "./dom.js";
 
 export function clearSelection() {
   state.wfFrom = null;
@@ -35,7 +36,6 @@ export function applySelectedPoints() {
 
 export function attachChartClickHandler() {
 
-  const canvas = document.getElementById("priceChart");
   if (!canvas) return;
 
   canvas.onclick = (evt) => {
