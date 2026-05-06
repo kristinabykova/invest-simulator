@@ -74,16 +74,28 @@ def roi(first: float, last: float):
 
 
 def risk_assessment(volatility: float | None, roi: float | None) -> str | None:
-    if volatility is None or roi is None:
+    if volatility is None:
         return None
 
-    if volatility > 1.5 and roi <= 0:
-        return "высокий риск"
+    if volatility >= 1.5:
+        risk = "высокий риск"
+    elif volatility <= 0.5:
+        risk = "низкий риск"
+    else:
+        risk = "умеренный риск"
 
-    if volatility < 0.5 and roi > 0:
-        return "низкий риск"
+    if roi is not None:
 
-    return "умеренный риск"
+        if roi > 10 and risk == "низкий риск":
+            return "умеренный риск"
+
+        if roi < -10 and risk == "низкий риск":
+            return "умеренный риск"
+
+        if roi < -10 and risk == "высокий риск":
+            return "высокий риск"
+
+    return risk
 
 
 async def analyze_whatif(

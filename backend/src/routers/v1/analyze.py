@@ -18,14 +18,15 @@ async def analyze(req: WhatIfRequest):
 
 @router.post("/ai")
 async def analyze_ai(req: WhatIfRequest):
-    result = await analyze_whatif(
-        req.ticker, req.from_, req.to, req.interval, req.lots_count
-    )
-    metrics = build_metrics_for_llm(result, req)
-    try:
-        result = await generate_insights(metrics)
-        result = result.model_dump()
-    except Exception as e:
-        print("LLM ERROR:", e)
-        result = None
-    return result
+    # result = await analyze_whatif(
+    #     req.ticker, req.from_, req.to, req.interval, req.lots_count
+    # )
+    # metrics = build_metrics_for_llm(result, req)
+    # try:
+    #     result = await generate_insights(metrics)
+    #     result = result.model_dump()
+    # except Exception as e:
+    #     print("LLM ERROR:", e)
+    #     result = None
+    # return result
+    return None

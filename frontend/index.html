@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Инвест-симулятор</title>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <div class="toast" id="toast"></div>
+
 
 <div class="modalOverlay hidden" id="registerModal">
   <div class="modalBox">
@@ -35,10 +36,61 @@
   </div>
 </div>
 
+<div class="modalOverlay hidden" id="helpModal">
+  <div class="modalBox helpModalBox">
+    <div class="modalTitle">Как пользоваться симулятором</div>
+
+    <div class="helpText">
+      <p>
+        Инвест-симулятор помогает изучать поведение акций на графике,
+        анализировать выбранные периоды и выполнять виртуальные операции
+        покупки и продажи без риска потери реальных денег.
+      </p>
+
+      <p>
+    В симуляторе вы можете выбирать акции из списка слева. После выбора акции
+    на экране отображается график изменения её цены.
+  </p>
+
+  <p>
+    Для просмотра доступны несколько периодов: последние сутки, 3 дня или 5 дней.
+    Это помогает увидеть, как менялась цена в коротком промежутке времени.
+  </p>
+
+  <p>
+    Если вас заинтересует поведение акции на определённом участке графика,
+    вы можете отметить две точки: начало и конец периода. После этого приложение
+    рассчитает основные показатели: прибыль, доходность, волатильность, риск
+    и тип тренда.
+  </p>
+
+  <p>
+    Чтобы оценить возможный результат покупки, укажите количество лотов и нажмите
+    кнопку «Рассчитать». Ниже появятся пояснение, подсказка и краткое описание
+    терминов, которые помогут понять полученные значения.
+  </p>
+
+  <p>
+    После входа в аккаунт становится доступен виртуальный портфель. В нём можно
+    покупать и продавать акции, отслеживать баланс и смотреть, как изменяется
+    результат ваших инвестиционных решений.
+  </p>
+    </div>
+
+    <div class="modalActions">
+      <button class="modalBtn" id="helpCloseBtn" type="button">Понятно</button>
+    </div>
+  </div>
+</div>
+
+
 <body>
   <div class="page">
     <div class="topbar">
+      <div class="topbarLeft">
       <div class="topbarTitle">Инвест-симулятор</div>
+      <button class="authBtn helpTopBtn" id="helpOpenBtn" type="button">Как пользоваться?</button>
+    </div>
 
       <div class="authButtons">
         <button class="authBtn" id="registerOpenBtn" type="button">Регистрация</button>
@@ -56,6 +108,22 @@
     <div id="tab-terms" class="tab-content">
     <div id="terms-content"></div>
     </div>
+     
+
+    <div id="tab-learning" class="tab-content">
+  <div class="learningPage">
+    <div class="learningCard">
+      <h2 class="learningTitle">Этапы обучения</h2>
+
+      <p class="learningText">
+        Раздел находится в разработке. В следующей версии здесь будет доступен
+        расширенный режим обучения, аналогичный основной вкладке приложения,
+        но с дополнительными параметрами управления рисками.
+      </p>
+    </div>
+  </div>
+</div>
+    
 
     <div id="tab-home" class="tab-content active">
     <div class="main">
@@ -156,6 +224,6 @@
   </div>
   </div>
 
-  <script type="module" src="./main.js"></script>
+  <script type="module" src="./static/main.js"></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 from contextlib import asynccontextmanager
-from core.config import settings
+from src.core.config import settings
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware

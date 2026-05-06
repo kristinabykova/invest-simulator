@@ -141,6 +141,26 @@ async function init() {
     loginOpenBtn.addEventListener("click", () => openModal(loginModal));
   }
 
+  const helpOpenBtn = document.getElementById("helpOpenBtn");
+const helpCloseBtn = document.getElementById("helpCloseBtn");
+const helpModal = document.getElementById("helpModal");
+
+if (helpOpenBtn) {
+  helpOpenBtn.addEventListener("click", () => openModal(helpModal));
+}
+
+if (helpCloseBtn) {
+  helpCloseBtn.addEventListener("click", () => closeModal(helpModal));
+}
+
+if (helpModal) {
+  helpModal.addEventListener("click", (event) => {
+    if (event.target === helpModal) {
+      closeModal(helpModal);
+    }
+  });
+}
+
   if (registerCloseBtn) {
     registerCloseBtn.addEventListener("click", () => closeModal(registerModal));
   }

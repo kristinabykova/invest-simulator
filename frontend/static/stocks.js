@@ -1,5 +1,5 @@
 import { state } from "./state.js";
-import { stocksBox, canvas, portfolioTickerSelect } from "./dom.js";
+import { stocksBox, portfolioTickerSelect } from "./dom.js";
 import { apiGetJson } from "./api.js";
 import { clearSelection, attachChartClickHandler } from "./chart.js";
 import { formatXAxisLabel } from "./utils.js";
@@ -91,6 +91,8 @@ export async function loadChart(stock) {
   const prices = data.map(d => Number(d.close));
 
   if (state.chart) state.chart.destroy();
+
+  const canvas = document.getElementById("priceChart");
 
   if (!canvas) {
     console.error("Не найден canvas #priceChart. Проверь index.html");
