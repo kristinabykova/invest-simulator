@@ -86,13 +86,10 @@ def risk_assessment(volatility: float | None, roi: float | None) -> str | None:
 
     if roi is not None:
 
-        if roi > 5 and risk == "низкий риск":
+        if abs(roi) > 5 and risk == "низкий риск":
             return "умеренный риск"
 
-        if roi < -5 and risk == "низкий риск":
-            return "умеренный риск"
-
-        if roi < -5 and risk == "высокий риск":
+        if roi < -5 and risk == "умеренный риск":
             return "высокий риск"
 
     return risk

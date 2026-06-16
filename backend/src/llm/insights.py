@@ -85,35 +85,40 @@ def build_user_prompt(m: MetricsIn) -> str:
 
 
 async def generate_insights(metrics: MetricsIn) -> InsightsResponse:
-    client = get_openai_client()
-    if client is None:
-        return InsightsResponse(
-            explanation="Генерация нейросетью недоступна.",
-            tip="Проверь настройку API-ключа.",
-            terms=[],
-            tone="нейтрально-обучающий",
-        )
-
-    resp = await client.chat.completions.create(
-        model=NVIDIA_MODEL,
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": build_user_prompt(metrics)},
-        ],
-        temperature=0.8,
-        top_p=0.9,
-        max_tokens=400,
-        extra_body={"chat_template_kwargs": {"thinking": False}},
+    fallback = InsightsResponse(
+        explanation="Генерация нейросетью временно недоступна.",
+        tip="Опирайся на показатели анализа периода: тренд, волатильность и риск.",
+        terms=[],
+        tone="нейтрально-обучающий",
     )
 
-    content = (resp.choices[0].message.content or "").strip()
+    client = get_openai_client()
+    if client is None:
+        return fallback
 
-    if not content.startswith("{"):
-        start = content.find("{")
-        end = content.rfind("}")
-        if start != -1 and end != -1 and end > start:
-            content = content[start : end + 1]
+    try:
+        resp = await client.chat.completions.create(
+            model=NVIDIA_MODEL,
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": build_user_prompt(metrics)},
+            ],
+            temperature=0.8,
+            top_p=0.9,
+            max_tokens=400,
+            extra_body={"chat_template_kwargs": {"thinking": False}},
+        )
 
-    data = json.loads(content)
+        content = (resp.choices[0].message.content or "").strip()
 
-    return InsightsResponse.model_validate(data)
+        if not content.startswith("{"):
+            start = content.find("{")
+            end = content.rfind("}")
+            if start != -1 and end != -1 and end > start:
+                content = content[start : end + 1]
+
+        data = json.loads(content)
+        return InsightsResponse.model_validate(data)
+
+    except Exception:
+        return fallback
